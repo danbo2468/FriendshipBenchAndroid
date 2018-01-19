@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            style="@style/FragmentPadding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/appointmentTextHeader"
+                style="@style/FragmentTextHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/header_appointments" />
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/appointmentWhenLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_when" />
+
+                <TextView
+                    android:id="@+id/appointmentWhenValue"
+                    style="@style/ValueText" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/appointmentWhereLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_where" />
+
+                <TextView
+                    android:id="@+id/appointmentWhereValue"
+                    style="@style/ValueText" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/appointmentWhoLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_who" />
+
+                <TextView
+                    android:id="@+id/appointmentWhoValue"
+                    style="@style/ValueText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/appointmentStatusLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_status" />
+
+                <TextView
+                    android:id="@+id/appointmentStatusValue"
+                    style="@style/ValueText" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/acceptButton"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_accepted"
+                android:drawableTint="@color/white"
+                android:text="@string/button_accept_appointment"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/cancelButton"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:drawableLeft="@drawable/ic_close"
+                android:text="@string/button_cancel_appointment"
+                android:visibility="gone" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>
