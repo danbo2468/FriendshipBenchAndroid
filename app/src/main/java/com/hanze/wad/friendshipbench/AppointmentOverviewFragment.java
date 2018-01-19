@@ -7,6 +7,7 @@ package com.hanze.wad.friendshipbench;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,6 +84,7 @@ public class AppointmentOverviewFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
+                Log.d("API", "ERROR: " + result.getMessage());
                 Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });

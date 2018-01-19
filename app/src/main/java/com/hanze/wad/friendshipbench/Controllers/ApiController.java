@@ -42,6 +42,7 @@ public class ApiController {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("API", error.getMessage());
+                        callback.onError(error);
                     }
                 });
         queue.add(arrayRequest);
@@ -66,6 +67,32 @@ public class ApiController {
                     @Override
                     public void onErrorResponse(VolleyError error) {
                         Log.d("API", error.getMessage());
+                        callback.onError(error);
+                    }
+                });
+        queue.add(objectRequest);
+    }
+
+    /**
+     * Make an API PUT request to update an object.
+     * @param url The endpoint for the request.
+     * @param context The context.
+     * @param callback The callback.
+     */
+    public static void putObject(String url, JSONObject object, Context context, final VolleyCallbackObject callback) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
+                new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("API", error.getMessage());
+                        callback.onError(error);
                     }
                 });
         queue.add(objectRequest);

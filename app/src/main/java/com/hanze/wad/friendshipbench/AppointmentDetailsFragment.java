@@ -84,6 +84,7 @@ public class AppointmentDetailsFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
+                Log.d("API", "ERROR: " + result.getMessage());
                 Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
@@ -123,11 +124,14 @@ public class AppointmentDetailsFragment extends Fragment {
         }
     }
 
-
+    /**
+     * Update the appointment status by making an API PUT request.
+     * @param accepted Whether the appointment has been accepted.
+     */
     private void updateStatus(boolean accepted) {
 
         // Create a new appointment model in order to do a PUT request.
-        AppointmentPut appointmentPut;
+        final AppointmentPut appointmentPut;
         if(accepted)
             appointmentPut = new AppointmentPut(appointment.getId(), appointment.getTime(), 2, appointment.getBench().getId(), appointment.getClient().getId(), appointment.getHealthworker().getId());
         else
@@ -139,27 +143,23 @@ public class AppointmentDetailsFragment extends Fragment {
             e.printStackTrace();
         }
 
-
-        RequestQueue queue = Volley.newRequestQueue(getActivity().getBaseContext());
-        JsonObjectRequest stringRequest = new JsonObjectRequest (Request.Method.PUT, getResources().getString(R.string.appointments_url) + "/" + appointment.getId(), json,
-                new Response.Listener<JSONObject>() {
-                    @Override
-                    public void onResponse(JSONObject  response) {
-                        if(appointment.getStatus().getId() == 2) {
-                            Toast.makeText(getActivity().getBaseContext(), "The appointment has been accepted.", Toast.LENGTH_LONG).show();
-                        } else {
-                            Toast.makeText(getActivity().getBaseContext(), "The appointment has been cancelled.", Toast.LENGTH_LONG).show();
-                        }
-                        fetchAppointment(appointment.getId());
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        fetchAppointment(appointment.getId());
-                        Log.d("API", error.getMessage());
-                    }
-                });
-        queue.add(stringRequest);
+        // Make an API PUT request.
+        ApiController.putObject(getResources().getString(R.string.appointments_url) + "/" + appointment.getId(), json, getActivity().getBaseContext(), new VolleyCallbackObject(){
+            @Override
+            public void onSuccess(JSONObject result){
+                Toast.makeText(getActivity().getBaseContext(), "The status for this appointment has been updated.", Toast.LENGTH_LONG).show();
+                fetchAppointment(appointment.getId());
+                updateView();
+            }
+            @Override
+            public void onError(VolleyError result){
+                if(result.getMessage().startsWith("org.json.JSONException")){
+                    onSuccess(null);
+                    return;
+                }
+                Log.d("API", "ERROR: " + result.getMessage());
+                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 }
