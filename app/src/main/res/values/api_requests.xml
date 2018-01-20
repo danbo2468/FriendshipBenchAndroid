@@ -4,4 +4,5 @@
     <string name="questionnaires_url">http://10.0.2.2:54618/api/questionnaires</string>
     <string name="questions_url">http://10.0.2.2:54618/api/questions</string>
     <string name="answers_url">http://10.0.2.2:54618/api/answers</string>
+    <string name="account_url">http://10.0.2.2:54618/api/account</string>
 </resources>

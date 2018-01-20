@@ -1,5 +1,10 @@
 package com.hanze.wad.friendshipbench.Models;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  * Created by danie on 17-Jan-18.
  */
@@ -67,5 +72,35 @@ public class Client {
 
     public String getFirstname() {
         return firstname;
+    }
+
+    public String getFullname() {
+        return firstname + " " + lastname;
+    }
+
+    public String getAddress() {
+        return streetname + " " + housenumber + ", " + district + ", " + province;
+    }
+
+    public String getGenderString(){
+        if(gender.equals("male"))
+            return "Male";
+        else if(gender.equals("female"))
+            return "Female";
+        else
+            return "Unknown";
+    }
+
+    public String getReadableBirthday() {
+        Date timeString;
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        try {
+            timeString = formatter.parse(this.birthday);
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+            return df.format(timeString);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
