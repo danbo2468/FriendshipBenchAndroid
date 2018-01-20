@@ -6,16 +6,16 @@ package com.hanze.wad.friendshipbench.Controllers;
 
 import android.content.Context;
 import android.util.Log;
+
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonArrayRequest;
-import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallbackArray;
-import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallbackObject;
-import org.json.JSONArray;
+import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallback;
+
 import org.json.JSONObject;
 
 /**
@@ -23,18 +23,30 @@ import org.json.JSONObject;
  */
 public class ApiController {
 
+    private static ApiController instance = null;
+    private RequestQueue requestQueue;
+
+    private ApiController(Context context){
+        requestQueue = Volley.newRequestQueue(context);
+    }
+
+    public static ApiController getInstance(Context context){
+        if(instance == null){
+            instance = new ApiController(context);
+        }
+        return instance;
+    }
+
     /**
      * Make an API GET request to get an array.
      * @param url The endpoint for the request.
-     * @param context The context.
      * @param callback The callback.
      */
-    public static void getArray(String url, Context context, final VolleyCallbackArray callback) {
-        RequestQueue queue = Volley.newRequestQueue(context);
-        JsonArrayRequest arrayRequest = new JsonArrayRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONArray>() {
+    public void getRequest(String url, final VolleyCallback callback) {
+        StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONArray response) {
+                    public void onResponse(String response) {
                         callback.onSuccess(response);
                     }
                 },
@@ -45,21 +57,14 @@ public class ApiController {
                         callback.onError(error);
                     }
                 });
-        queue.add(arrayRequest);
+        requestQueue.add(stringRequest);
     }
 
-    /**
-     * Make an API GET request to get an object.
-     * @param url The endpoint for the request.
-     * @param context The context.
-     * @param callback The callback.
-     */
-    public static void getObject(String url, Context context, final VolleyCallbackObject callback) {
-        RequestQueue queue = Volley.newRequestQueue(context);
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.GET, url, null,
-                new Response.Listener<JSONObject>() {
+    public void putObjectRequest(String url, final JSONObject object, final VolleyCallback callback) {
+        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>() {
                     @Override
-                    public void onResponse(JSONObject response) {
+                    public void onResponse(String response) {
                         callback.onSuccess(response);
                     }
                 },
@@ -69,32 +74,18 @@ public class ApiController {
                         Log.d("API", error.getMessage());
                         callback.onError(error);
                     }
-                });
-        queue.add(objectRequest);
-    }
+                }){
+                    @Override
+                    public byte[] getBody() throws AuthFailureError {
+                        return object.toString().getBytes();
+                    }
 
-    /**
-     * Make an API PUT request to update an object.
-     * @param url The endpoint for the request.
-     * @param context The context.
-     * @param callback The callback.
-     */
-    public static void putObject(String url, JSONObject object, Context context, final VolleyCallbackObject callback) {
-        RequestQueue queue = Volley.newRequestQueue(context);
-        JsonObjectRequest objectRequest = new JsonObjectRequest(Request.Method.PUT, url, object,
-                new Response.Listener<JSONObject>() {
                     @Override
-                    public void onResponse(JSONObject response) {
-                        callback.onSuccess(response);
+                    public String getBodyContentType() {
+                        return "application/json";
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("API", error.getMessage());
-                        callback.onError(error);
-                    }
-                });
-        queue.add(objectRequest);
+
+                };
+        requestQueue.add(stringRequest);
     }
 }

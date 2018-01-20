@@ -5,9 +5,8 @@
 package com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks;
 
 import com.android.volley.VolleyError;
-import org.json.JSONObject;
 
-public interface VolleyCallbackObject {
-    void onSuccess(JSONObject result);
+public interface VolleyCallback {
+    void onSuccess(String result);
     void onError(VolleyError result);
 }

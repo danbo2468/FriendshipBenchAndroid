@@ -13,17 +13,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
+
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.ApiModels.AppointmentPut;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.AppointmentController;
-import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallbackObject;
+import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Appointment;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -77,10 +73,14 @@ public class AppointmentDetailsFragment extends Fragment {
     private void fetchAppointment(int id) {
 
         // Make an API GET request.
-        ApiController.getObject(getResources().getString(R.string.appointments_url) + "/" + id, getActivity().getBaseContext(), new VolleyCallbackObject(){
+        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.appointments_url) + "/" + id, new VolleyCallback(){
             @Override
-            public void onSuccess(JSONObject result){
-                jsonToAppointment(result);
+            public void onSuccess(String result){
+                try {
+                    jsonToAppointment(new JSONObject(result));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             @Override
             public void onError(VolleyError result){
@@ -144,20 +144,15 @@ public class AppointmentDetailsFragment extends Fragment {
         }
 
         // Make an API PUT request.
-        ApiController.putObject(getResources().getString(R.string.appointments_url) + "/" + appointment.getId(), json, getActivity().getBaseContext(), new VolleyCallbackObject(){
+        ApiController.getInstance(getActivity().getBaseContext()).putObjectRequest(getResources().getString(R.string.appointments_url) + "/" + appointment.getId(), json, new VolleyCallback(){
             @Override
-            public void onSuccess(JSONObject result){
+            public void onSuccess(String result){
                 Toast.makeText(getActivity().getBaseContext(), "The status for this appointment has been updated.", Toast.LENGTH_LONG).show();
                 fetchAppointment(appointment.getId());
                 updateView();
             }
             @Override
             public void onError(VolleyError result){
-                if(result.getMessage().startsWith("org.json.JSONException")){
-                    onSuccess(null);
-                    return;
-                }
-                Log.d("API", "ERROR: " + result.getMessage());
                 Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });

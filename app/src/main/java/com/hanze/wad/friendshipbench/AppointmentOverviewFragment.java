@@ -7,7 +7,6 @@ package com.hanze.wad.friendshipbench;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +17,7 @@ import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.AppointmentController;
 import com.hanze.wad.friendshipbench.Controllers.CustomListAdapter;
-import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallbackArray;
+import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Appointment;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -77,14 +76,17 @@ public class AppointmentOverviewFragment extends Fragment {
         appointmentsList.clear();
 
         // Make an API GET request.
-        ApiController.getArray(getResources().getString(R.string.appointments_url), getActivity().getBaseContext(), new VolleyCallbackArray(){
+        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.appointments_url), new VolleyCallback(){
             @Override
-            public void onSuccess(JSONArray result){
-                jsonToAppointments(result);
+            public void onSuccess(String result){
+                try {
+                    jsonToAppointments(new JSONArray(result));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
             @Override
             public void onError(VolleyError result){
-                Log.d("API", "ERROR: " + result.getMessage());
                 Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
