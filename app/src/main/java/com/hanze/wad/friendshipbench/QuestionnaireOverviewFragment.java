@@ -1,24 +1,30 @@
+/*
+ * Copyright (c) 2018. Developed by the Hanzehogeschool Groningen for Friendship Bench Zimbabwe.
+ */
+
 package com.hanze.wad.friendshipbench;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.FloatingActionButton;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.QuestionnaireController;
 import com.hanze.wad.friendshipbench.Controllers.QuestionnaireListAdapter;
+import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Questionnaire;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,16 +32,14 @@ import java.util.ArrayList;
 
 /**
  * This class is the controller for the questionnaire_overview_layout.xml.
- * Created by Daniel Boonstra (Friendship Bench).
  */
 public class QuestionnaireOverviewFragment extends Fragment {
 
-    View view;
-    ArrayList<Questionnaire> questionnairesList = new ArrayList<>();
-    QuestionnaireListAdapter customAdapter;
+    private ArrayList<Questionnaire> questionnairesList = new ArrayList<>();
+    private QuestionnaireListAdapter customAdapter;
 
     /**
-     * This method is called when a view is opened.
+     * Initialize the view.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
@@ -44,7 +48,9 @@ public class QuestionnaireOverviewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.questionnaire_overview_layout, container, false);
+
+        // Get the current view.
+        View view = inflater.inflate(R.layout.questionnaire_overview_layout, container, false);
 
         // Set the QuestionnaireListAdapter as adapter for the listview.
         ListView listView = view.findViewById(R.id.questionnaireListView);
@@ -55,66 +61,69 @@ public class QuestionnaireOverviewFragment extends Fragment {
         // Handle the OnItemClick method.
         listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
-                Questionnaire questionnaire = (Questionnaire) parent.getItemAtPosition(position);
                 QuestionnaireDetailsFragment fragment = new QuestionnaireDetailsFragment();
-
-                // Sending the id to the new details view.
                 Bundle args = new Bundle();
-                args.putInt("questionnaire_id", questionnaire.getId());
+                args.putInt("questionnaire_id", ((Questionnaire) parent.getItemAtPosition(position)).getId());
                 fragment.setArguments(args);
-
-                // Start the animation.
                 getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
             }
         });
 
         // Handle the OnItemClick method for the Floating Action Button
-        FloatingActionButton fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 getFragmentManager().beginTransaction().replace(R.id.content_frame, new NewQuestionnaireFragment()).commit();
             }
         });
+
+        // Return the view.
         return view;
     }
 
     /**
-     * Do an API Request to get all the questionnaires.
+     * Make a GET request to the API to get all the questionnaires.
      */
     private void fetchQuestionnaires() {
+
+        // Clear the list with appointments (for refreshing purposes).
         questionnairesList.clear();
-        RequestQueue queue = Volley.newRequestQueue(getActivity().getBaseContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, getResources().getString(R.string.questionnaires_url),
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            jsonToQuestionnaire(new JSONArray(response));
-                            customAdapter.notifyDataSetChanged();
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("API", error.getMessage());
-                    }
-                });
-        queue.add(stringRequest);
+
+        // Make an API GET request.
+        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.questionnaires_url), new VolleyCallback(){
+            @Override
+            public void onSuccess(String result){
+                try {
+                    jsonToQuestionnaire(new JSONArray(result));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onError(VolleyError result){
+                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
-     * Convert all the JSON questionnaires to models and at them to the list.
-     * @param json The JSON Array.
-     * @throws JSONException An exception for when the JSON can't be parsed correctly.
+     * Convert a JSON list with questionnaires to a list with questionnaire models.
+     * @param json The JSON array with all the appointments in it.
      */
-    private void jsonToQuestionnaire(JSONArray json) throws JSONException {
+    private void jsonToQuestionnaire(JSONArray json) {
+
+        // Loop through the list.
         for (int i = 0; i < json.length(); i++) {
-            JSONObject questionnaireJson = json.getJSONObject(i);
+            JSONObject questionnaireJson = null;
+            try {
+                questionnaireJson = json.getJSONObject(i);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
             questionnairesList.add(QuestionnaireController.jsonToSummarizedModel(questionnaireJson));
         }
+
+        // Let the custom adapter know that the dataset has been changed.
+        customAdapter.notifyDataSetChanged();
     }
 
 }
