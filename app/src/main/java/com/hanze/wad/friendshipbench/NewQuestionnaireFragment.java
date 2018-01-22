@@ -163,6 +163,10 @@ public class NewQuestionnaireFragment extends Fragment {
         });
     }
 
+    /**
+     * Make an API POST request to submit all the answers.
+     * @param questionnaire The questionnaire where the answers belong to.
+     */
     private void submitAnswers(Questionnaire questionnaire) {
 
         // Save the questionnaire ID.

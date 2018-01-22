@@ -14,6 +14,7 @@
 
     <string name="header_appointments">My appointments</string>
     <string name="header_healthworker">My healthworker</string>
+    <string name="header_choose_healthworker">Choose healthworker</string>
     <string name="header_profile">My profile</string>
     <string name="header_new_questionnaire">New questionnaire</string>
     <string name="header_questionnaires">My questionnaires</string>
@@ -28,6 +29,9 @@
     <string name="button_no">No</string>
     <string name="button_yes">Yes</string>
     <string name="button_update_profile">Update profile</string>
+    <string name="button_choose_healthworker">Choose this healthworker</string>
+    <string name="button_next_healthworker">Next healthworker</string>
+    <string name="button_previous_healthworker">Previous healthworker</string>
 
     <string name="label_when">When:</string>
     <string name="label_where">Where:</string>

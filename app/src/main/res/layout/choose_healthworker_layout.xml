@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2018. Developed by the Hanzehogeschool Groningen for Friendship Bench Zimbabwe.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+
+
+        <LinearLayout
+            style="@style/FragmentPadding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/profileTextHeader"
+                style="@style/FragmentTextHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/header_choose_healthworker" />
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/healthworkerNameLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_name" />
+
+                <TextView
+                    android:id="@+id/healthworkerNameValue"
+                    style="@style/ValueText" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/healthworkerGenderLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_gender" />
+
+                <TextView
+                    android:id="@+id/healthworkerGenderValue"
+                    style="@style/ValueText" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/healthworkerBirthdayLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_birthday" />
+
+                <TextView
+                    android:id="@+id/healthworkerBirthdayValue"
+                    style="@style/ValueText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/healthworkerEmailLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_email" />
+
+                <TextView
+                    android:id="@+id/healthworkerEmailValue"
+                    style="@style/ValueText" />
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/buttonChooseHealthworker"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/button_choose_healthworker" />
+
+            <Button
+                android:id="@+id/buttonNextHealthworker"
+                style="@android:style/Widget.DeviceDefault.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/button_next_healthworker" />
+
+            <Button
+                android:id="@+id/buttonPreviousHealthworker"
+                style="@android:style/Widget.DeviceDefault.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/button_previous_healthworker" />
+
+
+        </LinearLayout>
+
+
+
+    </ScrollView>
+
+</RelativeLayout>
