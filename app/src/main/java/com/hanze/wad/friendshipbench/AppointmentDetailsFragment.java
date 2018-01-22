@@ -69,6 +69,7 @@ public class AppointmentDetailsFragment extends Fragment {
 
     /**
      * Make a GET request to the API to get the requested appointment.
+     * @param id The ID of the requested appointment.
      */
     private void fetchAppointment(int id) {
 
@@ -92,7 +93,7 @@ public class AppointmentDetailsFragment extends Fragment {
 
     /**
      * Convert a JSON object to an appointment.
-     * @param json The JSON array with all the appointments in it.
+     * @param json The JSON object with the appointments in it.
      */
     private void jsonToAppointment(JSONObject json) {
         this.appointment = AppointmentController.jsonToModel(json);

@@ -8,42 +8,29 @@ import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-import com.google.gson.Gson;
-import com.hanze.wad.friendshipbench.ApiModels.AppointmentPut;
-import com.hanze.wad.friendshipbench.Controllers.AppointmentController;
+import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.QuestionnaireController;
+import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Answer;
-import com.hanze.wad.friendshipbench.Models.Appointment;
 import com.hanze.wad.friendshipbench.Models.Questionnaire;
-
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 /**
  * This class is the controller for the questionnaire_details_layout.xml.
- * Created by Daniel Boonstra (Friendship Bench).
  */
 public class QuestionnaireDetailsFragment extends Fragment {
 
-    View view;
-    Questionnaire questionnaire;
-    int id;
+    private View view;
+    private Questionnaire questionnaire;
+    private int id;
 
     /**
-     * This method is called when a view is opened.
+     * Initialize the view.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
@@ -52,76 +39,89 @@ public class QuestionnaireDetailsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+
+        // Get the current view.
         view = inflater.inflate(R.layout.questionnaire_details_layout, container, false);
+
+        // Get the current questionnaire ID.
         Bundle bundle = getArguments();
         this.id = bundle.getInt("questionnaire_id");
-        fetchQuestionnaire(bundle.getInt("questionnaire_id"));
+        fetchQuestionnaire(this.id);
+
+        // Return the view.
         return view;
     }
 
     /**
-     * Do an API Request to get a certain questionnaire.
+     * Make a GET request to the API to get the requested questionnaire.
      * @param id The ID of the requested questionnaire.
      */
     private void fetchQuestionnaire(int id) {
-        RequestQueue queue = Volley.newRequestQueue(getActivity().getBaseContext());
-        StringRequest stringRequest = new StringRequest(Request.Method.GET, getResources().getString(R.string.questionnaires_url) + "/" + id,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            jsonToQuestionnaire(new JSONObject(response));
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                        updateView();
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Log.d("API", error.getMessage());
-                    }
-                });
-        queue.add(stringRequest);
+
+        // Make an API GET request.
+        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.questionnaires_url) + "/" + id, new VolleyCallback(){
+            @Override
+            public void onSuccess(String result){
+                try {
+                    jsonToQuestionnaire(new JSONObject(result));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onError(VolleyError result){
+                Log.d("API", "ERROR: " + result.getMessage());
+                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     /**
-     * Convert the JSON appointment to a model.
-     * @param json The JSON object.
-     * @throws JSONException An exception for when the JSON can't be parsed correctly.
+     * Convert a JSON object to a questionnaire.
+     * @param json The JSON object with the appointment in it.
      */
-    private void jsonToQuestionnaire(JSONObject json) throws JSONException {
+    private void jsonToQuestionnaire(JSONObject json) {
         this.questionnaire = QuestionnaireController.jsonToDetailedModel(json);
+        updateView();
     }
 
     /**
-     * Update the current fragment fields.
+     * Update the view with the right questionnaire information.
      */
     private void updateView(){
-        ((TextView) getActivity().findViewById(R.id.questionnaireTextHeader)).setText("Questionnaire " + this.id);
-        if(questionnaire.isRedflag()){
-            view.findViewById(R.id.redFlagHeader).setVisibility(View.VISIBLE);
-        }
-        LinearLayout linearLayout = view.findViewById(R.id.questionnaireDetailsLayout);
-        for (int i = 0; i < questionnaire.getAnswers().size(); i++) {
-            Answer answer = questionnaire.getAnswers().get(i);
 
+        // Update the header.
+        ((TextView) getActivity().findViewById(R.id.questionnaireTextHeader)).setText("Questionnaire " + this.id);
+
+        // Add a red flag icon to the header is needed.
+        if(questionnaire.isRedflag())
+            view.findViewById(R.id.redFlagHeader).setVisibility(View.VISIBLE);
+
+        // Get the current layout which will wrap all the details.
+        LinearLayout linearLayout = view.findViewById(R.id.questionnaireDetailsLayout);
+
+        // Add a label value pair for every answer in the questionnaire.
+        for (int i = 0; i < questionnaire.getAnswers().size(); i++) {
+
+            // Create a new linearLabelValueLayout.
+            Answer answer = questionnaire.getAnswers().get(i);
             ContextThemeWrapper layoutContext = new ContextThemeWrapper(getActivity().getBaseContext(), R.style.LinearLabelValueLayout);
             LinearLayout linearLabelValueLayout = new LinearLayout(layoutContext);
 
+            // Create a new label text field.
             ContextThemeWrapper labelContext = new ContextThemeWrapper(getActivity().getBaseContext(), R.style.LabelText);
             TextView label = new TextView(labelContext);
             label.setText(answer.getQuestion());
 
+            // Create a new value text field.
             ContextThemeWrapper valueContext = new ContextThemeWrapper(getActivity().getBaseContext(), R.style.ValueText);
             TextView value = new TextView(valueContext);
             value.setText(answer.getAnswer());
 
+            // Add both text fields to the linearLabelValueLayout.
             linearLayout.addView(linearLabelValueLayout);
             linearLabelValueLayout.addView(label);
             linearLabelValueLayout.addView(value);
-
         }
     }
 }
