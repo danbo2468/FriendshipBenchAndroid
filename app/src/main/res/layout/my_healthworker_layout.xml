@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -13,13 +15,69 @@
             android:orientation="vertical" >
 
             <TextView
-                android:id="@+id/textView"
+                android:id="@+id/profileTextHeader"
                 style="@style/FragmentTextHeader"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="16dp"
                 android:text="@string/header_healthworker" />
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/healthworkerNameLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_name" />
+
+                <TextView
+                    android:id="@+id/healthworkerNameValue"
+                    style="@style/ValueText" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/healthworkerGenderLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_gender" />
+
+                <TextView
+                    android:id="@+id/healthworkerGenderValue"
+                    style="@style/ValueText" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/healthworkerBirthdayLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_birthday" />
+
+                <TextView
+                    android:id="@+id/healthworkerBirthdayValue"
+                    style="@style/ValueText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/healthworkerEmailLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_email" />
+
+                <TextView
+                    android:id="@+id/healthworkerEmailValue"
+                    style="@style/ValueText" />
+
+            </LinearLayout>
+
         </LinearLayout>
+
     </ScrollView>
 
 </RelativeLayout>

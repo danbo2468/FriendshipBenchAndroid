@@ -5,10 +5,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-/**
- * Created by danie on 17-Jan-18.
- */
-
 public class Client {
     private String id;
     private String lastname;
