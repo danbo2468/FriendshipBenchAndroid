@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.ClientController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
+import com.hanze.wad.friendshipbench.Models.Appointment;
 import com.hanze.wad.friendshipbench.Models.Client;
 
 import org.json.JSONException;
@@ -47,6 +48,17 @@ public class ProfileFragment extends Fragment {
         // Get the user information
         fetchProfile("daniel.boonstra@outlook.com");
 
+        // Handle the OnItemClick method for the Floating Action Button
+        view.findViewById(R.id.profileFab).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                EditProfileFragment fragment = new EditProfileFragment();
+                Bundle values = new Bundle();
+                values.putString("client_email", client.getEmail());
+                fragment.setArguments(values);
+                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+            }
+        });
+
         // Return the view.
         return view;
     }
@@ -69,7 +81,6 @@ public class ProfileFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Log.d("API", "ERROR: " + result.getMessage());
                 Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });

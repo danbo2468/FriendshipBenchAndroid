@@ -27,16 +27,26 @@
     <string name="button_cancel_appointment">Cancel appointment</string>
     <string name="button_no">No</string>
     <string name="button_yes">Yes</string>
+    <string name="button_update_profile">Update profile</string>
 
     <string name="label_when">When:</string>
     <string name="label_where">Where:</string>
     <string name="label_who">Who:</string>
     <string name="label_status">Status:</string>
     <string name="label_name">Name:</string>
+    <string name="label_firstname">Firstname:</string>
+    <string name="label_lastname">Lastname:</string>
     <string name="label_address">Address:</string>
+    <string name="label_streetname">Streetname:</string>
+    <string name="label_number">Number:</string>
+    <string name="label_province">Province:</string>
+    <string name="label_district">District:</string>
     <string name="label_email">Email:</string>
     <string name="label_gender">Gender:</string>
     <string name="label_birthday">Birthday:</string>
+
+    <string name="value_female">Female</string>
+    <string name="value_male">Male</string>
 
     <string name="error_message">Sorry, something went wrong. Please try again later.</string>
 </resources>

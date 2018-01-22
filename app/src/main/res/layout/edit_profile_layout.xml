@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2018. Developed by the Hanzehogeschool Groningen for Friendship Bench Zimbabwe.
+  -->
+
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            style="@style/FragmentPadding"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/profileTextHeader"
+                style="@style/FragmentTextHeader"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="16dp"
+                android:text="@string/header_profile" />
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/editFirstnameLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_firstname" />
+
+                <EditText
+                    android:id="@+id/editFirstnameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="@style/ValueText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/editLastnameLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_lastname" />
+
+                <EditText
+                    android:id="@+id/editLastnameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="@style/ValueText" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/editGenderLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_gender" />
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <RadioButton
+                        android:id="@+id/editGenderFemale"
+                        style="@style/ValueText"
+                        android:layout_weight="1"
+                        android:text="@string/value_female" />
+
+                    <RadioButton
+                        android:id="@+id/editGenderMale"
+                        style="@style/ValueText"
+                        android:layout_weight="1"
+                        android:text="@string/value_male" />
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/editStreetnameLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_streetname" />
+
+                <EditText
+                    android:id="@+id/editStreetnameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="@style/ValueText" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/editNumberLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_number" />
+
+                <EditText
+                    android:id="@+id/editHousenumberField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="@style/ValueText" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/editDistrictLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_district" />
+
+                <EditText
+                    android:id="@+id/editDistrictField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="@style/ValueText" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/editProvinceLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_province" />
+
+                <EditText
+                    android:id="@+id/editProvinceField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"
+                    android:text="@style/ValueText" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/updateProfileButton"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/button_update_profile" />
+
+        </LinearLayout>
+
+    </ScrollView>
+
+</RelativeLayout>
