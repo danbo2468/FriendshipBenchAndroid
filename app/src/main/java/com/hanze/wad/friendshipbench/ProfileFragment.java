@@ -17,7 +17,7 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.ClientController;
-import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallback;
+import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Client;
 
 import org.json.JSONException;

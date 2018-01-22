@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2018. Developed by the Hanzehogeschool Groningen for Friendship Bench Zimbabwe.
+ */
+
 package com.hanze.wad.friendshipbench.Controllers;
 import com.hanze.wad.friendshipbench.Models.Appointment;
 import com.hanze.wad.friendshipbench.Models.Bench;
@@ -9,7 +13,6 @@ import org.json.JSONObject;
 
 /**
  * This class is an helper class for appointment logic.
- * Created by Daniel Boonstra (Friendship Bench).
  */
 public class AppointmentController {
 

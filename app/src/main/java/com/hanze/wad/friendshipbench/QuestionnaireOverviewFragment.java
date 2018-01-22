@@ -16,7 +16,7 @@ import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.QuestionnaireController;
 import com.hanze.wad.friendshipbench.Controllers.QuestionnaireListAdapter;
-import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallback;
+import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Questionnaire;
 import org.json.JSONArray;
 import org.json.JSONException;

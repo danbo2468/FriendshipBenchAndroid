@@ -4,11 +4,7 @@
 
 package com.hanze.wad.friendshipbench.Controllers;
 
-import com.hanze.wad.friendshipbench.Models.Appointment;
-import com.hanze.wad.friendshipbench.Models.Bench;
 import com.hanze.wad.friendshipbench.Models.Client;
-import com.hanze.wad.friendshipbench.Models.Healthworker;
-import com.hanze.wad.friendshipbench.Models.Status;
 
 import org.json.JSONException;
 import org.json.JSONObject;

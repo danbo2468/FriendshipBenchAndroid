@@ -13,8 +13,6 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallback;
-import org.json.JSONObject;
 
 /**
  * The controller that handles every API request.
@@ -73,7 +71,7 @@ public class ApiController {
      * @param object The object that will be send to the API.
      * @param callback The callback that will be called afterwards.
      */
-    public void putObjectRequest(String url, final JSONObject object, final VolleyCallback callback) {
+    public void putRequest(String url, final Object object, final VolleyCallback callback) {
         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>() {
                     @Override
@@ -88,17 +86,50 @@ public class ApiController {
                         callback.onError(error);
                     }
                 }){
-                    @Override
-                    public byte[] getBody() throws AuthFailureError {
-                        return object.toString().getBytes();
-                    }
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                return object.toString().getBytes();
+            }
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
 
-                    @Override
-                    public String getBodyContentType() {
-                        return "application/json";
-                    }
+        };
+        requestQueue.add(stringRequest);
+    }
 
-                };
+    /**
+     * Make an API POST request.
+     * @param url The endpoint for the request.
+     * @param object The object that will be send to the API.
+     * @param callback The callback that will be called afterwards.
+     */
+    public void postRequest(String url, final Object object, final VolleyCallback callback) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("API", error.getMessage());
+                        callback.onError(error);
+                    }
+                }){
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                return object.toString().getBytes();
+            }
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
+
+        };
         requestQueue.add(stringRequest);
     }
 }

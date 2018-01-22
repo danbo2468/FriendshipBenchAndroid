@@ -2,7 +2,7 @@
  * Copyright (c) 2018. Developed by the Hanzehogeschool Groningen for Friendship Bench Zimbabwe.
  */
 
-package com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks;
+package com.hanze.wad.friendshipbench.Controllers;
 
 import com.android.volley.VolleyError;
 

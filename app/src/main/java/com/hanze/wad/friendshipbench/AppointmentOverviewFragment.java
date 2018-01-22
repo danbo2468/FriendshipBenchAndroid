@@ -16,8 +16,8 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.AppointmentController;
-import com.hanze.wad.friendshipbench.Controllers.CustomListAdapter;
-import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallback;
+import com.hanze.wad.friendshipbench.Controllers.AppointmentListAdapter;
+import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Appointment;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -30,7 +30,7 @@ import java.util.ArrayList;
 public class AppointmentOverviewFragment extends Fragment {
 
     private ArrayList<Appointment> appointmentsList = new ArrayList<>();
-    private CustomListAdapter customAdapter;
+    private AppointmentListAdapter customAdapter;
 
     /**
      * Initialize the view.
@@ -46,9 +46,9 @@ public class AppointmentOverviewFragment extends Fragment {
         // Get the current view.
         View view = inflater.inflate(R.layout.appointment_overview_layout, container, false);
 
-        // Set the CustomListAdapter as adapter for the listview.
+        // Set the AppointmentListAdapter as adapter for the listview.
         ListView listView = view.findViewById(R.id.appointmentListView);
-        customAdapter = new CustomListAdapter(getActivity().getBaseContext(), appointmentsList);
+        customAdapter = new AppointmentListAdapter(getActivity().getBaseContext(), appointmentsList);
         listView.setAdapter(customAdapter);
         fetchAppointments();
 

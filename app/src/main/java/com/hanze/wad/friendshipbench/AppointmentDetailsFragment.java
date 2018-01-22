@@ -7,7 +7,6 @@ package com.hanze.wad.friendshipbench;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,7 +18,7 @@ import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.ApiModels.AppointmentPut;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.AppointmentController;
-import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallback;
+import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Appointment;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -85,7 +84,6 @@ public class AppointmentDetailsFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Log.d("API", "ERROR: " + result.getMessage());
                 Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
@@ -145,7 +143,7 @@ public class AppointmentDetailsFragment extends Fragment {
         }
 
         // Make an API PUT request.
-        ApiController.getInstance(getActivity().getBaseContext()).putObjectRequest(getResources().getString(R.string.appointments_url) + "/" + appointment.getId(), json, new VolleyCallback(){
+        ApiController.getInstance(getActivity().getBaseContext()).putRequest(getResources().getString(R.string.appointments_url) + "/" + appointment.getId(), json, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 Toast.makeText(getActivity().getBaseContext(), "The status for this appointment has been updated.", Toast.LENGTH_LONG).show();

@@ -3,7 +3,6 @@ package com.hanze.wad.friendshipbench;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,7 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.QuestionnaireController;
-import com.hanze.wad.friendshipbench.Controllers.VolleyCallbacks.VolleyCallback;
+import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Answer;
 import com.hanze.wad.friendshipbench.Models.Questionnaire;
 import org.json.JSONException;
@@ -70,7 +69,6 @@ public class QuestionnaireDetailsFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Log.d("API", "ERROR: " + result.getMessage());
                 Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
@@ -78,7 +76,7 @@ public class QuestionnaireDetailsFragment extends Fragment {
 
     /**
      * Convert a JSON object to a questionnaire.
-     * @param json The JSON object with the appointment in it.
+     * @param json The JSON object with the question in it.
      */
     private void jsonToQuestionnaire(JSONObject json) {
         this.questionnaire = QuestionnaireController.jsonToDetailedModel(json);

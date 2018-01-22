@@ -11,7 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.ArrayList;
 
-public class CustomListAdapter extends BaseAdapter {
+public class AppointmentListAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
     private ArrayList<Appointment> objects;
@@ -22,7 +22,7 @@ public class CustomListAdapter extends BaseAdapter {
         ImageView icon;
     }
 
-    public CustomListAdapter(Context context, ArrayList<Appointment> objects) {
+    public AppointmentListAdapter(Context context, ArrayList<Appointment> objects) {
         inflater = LayoutInflater.from(context);
         this.objects = objects;
     }
