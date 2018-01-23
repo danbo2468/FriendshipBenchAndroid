@@ -66,6 +66,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                         .replace(R.id.content_frame, new ChooseHealthworkerFragment())
                         .commit();
             }
+        } else if (id == R.id.nav_conversations) {
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new ConversationFragment())
+                    .commit();
         } else if (id == R.id.nav_profile) {
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new ProfileFragment())

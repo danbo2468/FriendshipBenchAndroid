@@ -13,6 +13,10 @@
             android:icon="@drawable/ic_menu_appointment"
             android:title="@string/menu_appointments" />
         <item
+            android:id="@+id/nav_conversations"
+            android:icon="@drawable/ic_menu_conversations"
+            android:title="@string/menu_conversations" />
+        <item
             android:id="@+id/nav_healthworker"
             android:icon="@drawable/ic_menu_healthworker"
             android:title="@string/menu_healthworker" />

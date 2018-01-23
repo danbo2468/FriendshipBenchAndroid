@@ -8,6 +8,7 @@
 
     <string name="menu_appointments">Appointments</string>
     <string name="menu_healthworker">Healthworker</string>
+    <string name="menu_conversations">Conversations</string>
     <string name="menu_profile">Profile</string>
     <string name="menu_questionnaires">Questionnaires</string>
     <string name="menu_about">About</string>
@@ -19,6 +20,7 @@
     <string name="header_new_questionnaire">New questionnaire</string>
     <string name="header_questionnaires">My questionnaires</string>
     <string name="header_about">About the Friendship Bench</string>
+    <string name="header_conversation">My conversation</string>
 
     <string name="text_full_about">We try to reach out to people in Zimbabwe who are in need of help. Think about people who suffer from mental disorders, unwanted pregnancies or anything else that comes with (mental) problems. \n\nWe work with a SSQ-14, a question list which can determine if you are in need of help.</string>
     <string name="text_full_ssq14">By filling in this SSQ14 questionnaire, we can determine if you are in need of help.</string>
