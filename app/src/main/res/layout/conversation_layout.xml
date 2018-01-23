@@ -3,28 +3,63 @@
   ~ Copyright (c) 2018. Developed by the Hanzehogeschool Groningen for Friendship Bench Zimbabwe.
   -->
 
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/FragmentPadding"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <ScrollView
+    <TextView
+        android:id="@+id/textView"
+        style="@style/FragmentTextHeader"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_marginBottom="16dp"
+        android:text="@string/header_conversation" />
+
+    <ScrollView
+        android:layout_below="@id/textView"
+        android:layout_width="match_parent"
+        android:layout_above="@+id/newMessageLayout"
+        android:layout_height="wrap_content">
 
         <LinearLayout
-            style="@style/FragmentPadding"
+            android:id="@+id/chatLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical" >
-
-            <TextView
-                android:id="@+id/textView"
-                style="@style/FragmentTextHeader"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                android:text="@string/header_conversation" />
-
-        </LinearLayout>
+            android:orientation="vertical"/>
     </ScrollView>
+
+    <RelativeLayout
+        android:id="@+id/newMessageLayout"
+        android:layout_width="match_parent"
+        android:layout_height="50dip"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true">
+
+        <EditText
+            android:id="@+id/messageTextField"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_toLeftOf="@+id/buttonSendMessage"
+            android:layout_toStartOf="@+id/buttonSendMessage"
+            android:ems="10"
+            android:inputType="textPersonName" />
+
+        <ImageButton
+            android:id="@+id/buttonSendMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@null"
+            android:paddingLeft="16dp"
+            android:src="@drawable/ic_send"
+            android:tint="@color/colorPrimaryDarkest" />
+    </RelativeLayout>
+
 
 </RelativeLayout>

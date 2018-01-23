@@ -59,8 +59,7 @@ public class NewQuestionnaireFragment extends Fragment {
         fetchQuestions();
 
         // Handle the OnItemClick method for the yes button.
-        Button buttonYes = view.findViewById(R.id.buttonYes);
-        buttonYes.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.buttonYes).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 numberOfYesQuestions++;
                 if (questionList.get(currentQuestion).getId() == SUICIDE_QUESTION)
