@@ -44,8 +44,8 @@ public class ConversationFragment extends Fragment {
         // Handle the button for sending a new message.
         view.findViewById(R.id.buttonSendMessage).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                socket.emit("new message", ((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), key);
-                showMessage(((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OwnMessage));
+                socket.emit("new message", "USERID", "Daniel Boonstra", ((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), "13:02", key);
+                showMessage("USERID", "Daniel Boonstra", ((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), "13:02", new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OwnMessage));
                 ((EditText)view.findViewById(R.id.messageTextField)).setText("");
             }
         });
@@ -71,24 +71,8 @@ public class ConversationFragment extends Fragment {
 
         // Enter a room and set the handlers.
         socket.emit("join room", key);
-        socket.on("server message", handleServerMessage);
         socket.on("new message", handleNewMessage);
     }
-
-    /**
-     * Listen to new messages from the server.
-     */
-    private Emitter.Listener handleServerMessage = new Emitter.Listener() {
-        @Override
-        public void call(final Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    showMessage(args[0].toString(), new ContextThemeWrapper(getActivity().getBaseContext(), R.style.ServerMessage));
-                }
-            });
-        }
-    };
 
     /**
      * Listen to new messages from the healthworker.
@@ -99,7 +83,7 @@ public class ConversationFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    showMessage(args[0].toString(), new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OtherMessage));
+                    showMessage(args[0].toString(), args[1].toString(), args[2].toString(), args[3].toString(), new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OtherMessage));
                 }
             });
         }
@@ -110,7 +94,7 @@ public class ConversationFragment extends Fragment {
      * @param message The message information.
      * @param theme The style for the message.
      */
-    private void showMessage(String message, ContextThemeWrapper theme){
+    private void showMessage(String user, String name, String message, String time, ContextThemeWrapper theme){
         TextView label = new TextView(theme);
         label.setText(message);
         ((LinearLayout)view.findViewById(R.id.chatLayout)).addView(label);
