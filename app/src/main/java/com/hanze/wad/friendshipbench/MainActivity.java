@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        user = new User("4216d9b5-43ae-47e8-b63a-ec200e8fc2a6", "daniel.boonstra@outlook.com", "Daniel", "Boonstra", "06f5e5b1-9ce4-4eb7-8632-3ab59380e7d");
+        user = new User("4216d9b5-43ae-47e8-b63a-ec200e8fc2a6", "daniel.boonstra@outlook.com", "Mustafa", "Nig Nog", "06f5e5b1-9ce4-4eb7-8632-3ab59380e7d");
         Gson gson = new Gson();
         String userJson = gson.toJson(user);
         SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();

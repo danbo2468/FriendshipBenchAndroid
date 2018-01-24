@@ -20,6 +20,7 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
+import com.hanze.wad.friendshipbench.Models.Answer;
 import com.hanze.wad.friendshipbench.Models.User;
 
 import java.net.URISyntaxException;
@@ -97,14 +98,38 @@ public class ConversationFragment extends Fragment {
     };
 
     private void showOtherMessage(String user, String name, String message, String time){
-        TextView label = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OtherMessage));
-        label.setText(message);
-        ((LinearLayout)view.findViewById(R.id.chatLayout)).addView(label);
+
+        // Create a new linearLabelValueLayout.
+        ContextThemeWrapper layoutContext = new ContextThemeWrapper(getActivity().getBaseContext(), R.style.ChatMessage);
+        LinearLayout chatMessage = new LinearLayout(layoutContext);
+
+        // Set the text fields.
+        TextView sender = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OtherSender));
+        sender.setText(name);
+        TextView messageText = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OtherMessage));
+        messageText.setText(message);
+
+        // Add everything to the chat.
+        chatMessage.addView(sender);
+        chatMessage.addView(messageText);
+        ((LinearLayout)view.findViewById(R.id.chatLayout)).addView(chatMessage);
     }
 
     private void showMyMessage(String message, String time){
-        TextView label = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OwnMessage));
-        label.setText(message);
-        ((LinearLayout)view.findViewById(R.id.chatLayout)).addView(label);
+
+        // Create a new linearLabelValueLayout.
+        ContextThemeWrapper layoutContext = new ContextThemeWrapper(getActivity().getBaseContext(), R.style.ChatMessage);
+        LinearLayout chatMessage = new LinearLayout(layoutContext);
+
+        // Set the text fields.
+        TextView sender = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OwnSender));
+        sender.setText("You");
+        TextView messageText = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OwnMessage));
+        messageText.setText(message);
+
+        // Add everything to the chat.
+        chatMessage.addView(sender);
+        chatMessage.addView(messageText);
+        ((LinearLayout)view.findViewById(R.id.chatLayout)).addView(chatMessage);
     }
 }
