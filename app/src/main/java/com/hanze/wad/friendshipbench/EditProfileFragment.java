@@ -5,6 +5,7 @@
 package com.hanze.wad.friendshipbench;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -23,6 +24,7 @@ import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.ClientController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Client;
+import com.hanze.wad.friendshipbench.Models.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -49,8 +51,8 @@ public class EditProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.edit_profile_layout, container, false);
 
         // Get the current client email.
-        Bundle bundle = getArguments();
-        fetchProfile(bundle.getString("client_email"));
+        User user = ((MainActivity)getActivity()).user;
+        fetchProfile(user.getEmail());
 
         // Handle the OnItemClick method for update button. It will do an API PUT request.
         view.findViewById(R.id.updateProfileButton).setOnClickListener(new View.OnClickListener() {

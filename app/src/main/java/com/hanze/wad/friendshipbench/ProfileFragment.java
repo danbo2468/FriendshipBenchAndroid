@@ -5,6 +5,7 @@
 package com.hanze.wad.friendshipbench;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -15,11 +16,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
+import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.ClientController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Appointment;
 import com.hanze.wad.friendshipbench.Models.Client;
+import com.hanze.wad.friendshipbench.Models.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,17 +48,14 @@ public class ProfileFragment extends Fragment {
         // Get the current view.
         View view = inflater.inflate(R.layout.profile_layout, container, false);
 
-        // Get the user information
-        fetchProfile("daniel.boonstra@outlook.com");
+        // Get the user
+        User user = ((MainActivity)getActivity()).user;
+        fetchProfile(user.getEmail());
 
         // Handle the OnItemClick method for the Floating Action Button
         view.findViewById(R.id.profileFab).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                EditProfileFragment fragment = new EditProfileFragment();
-                Bundle values = new Bundle();
-                values.putString("client_email", client.getEmail());
-                fragment.setArguments(values);
-                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+                getFragmentManager().beginTransaction().replace(R.id.content_frame, new EditProfileFragment()).commit();
             }
         });
 

@@ -54,5 +54,8 @@
     <string name="value_female">Female</string>
     <string name="value_male">Male</string>
 
+    <string name="no_questionnaire_message">No questionnaires found.</string>
+    <string name="no_appointment_message">No appointments found.</string>
+
     <string name="error_message">Sorry, something went wrong. Please try again later.</string>
 </resources>

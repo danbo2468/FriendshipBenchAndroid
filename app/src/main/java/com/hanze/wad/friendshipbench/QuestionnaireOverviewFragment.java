@@ -6,11 +6,16 @@ package com.hanze.wad.friendshipbench;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
@@ -30,6 +35,7 @@ public class QuestionnaireOverviewFragment extends Fragment {
 
     private ArrayList<Questionnaire> questionnairesList = new ArrayList<>();
     private QuestionnaireListAdapter customAdapter;
+    private View view;
 
     /**
      * Initialize the view.
@@ -43,7 +49,7 @@ public class QuestionnaireOverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         // Get the current view.
-        View view = inflater.inflate(R.layout.questionnaire_overview_layout, container, false);
+        view = inflater.inflate(R.layout.questionnaire_overview_layout, container, false);
 
         // Set the QuestionnaireListAdapter as adapter for the listview.
         ListView listView = view.findViewById(R.id.questionnaireListView);
@@ -82,12 +88,14 @@ public class QuestionnaireOverviewFragment extends Fragment {
         questionnairesList.clear();
 
         // Make an API GET request.
-        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.questionnaires_url), new VolleyCallback(){
+        Log.d("TEST", getResources().getString(R.string.questionnaires_url) + "?clientId=" + ((MainActivity)getActivity()).user.getId());
+        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.questionnaires_url) + "?clientId=" + ((MainActivity)getActivity()).user.getId(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
                     jsonToQuestionnaire(new JSONArray(result));
                 } catch (JSONException e) {
+                    ((TextView) view.findViewById(R.id.text_no_questionnaire)).setText(getString(R.string.no_questionnaire_message));
                     e.printStackTrace();
                 }
             }
@@ -118,5 +126,4 @@ public class QuestionnaireOverviewFragment extends Fragment {
         // Let the custom adapter know that the dataset has been changed.
         customAdapter.notifyDataSetChanged();
     }
-
 }

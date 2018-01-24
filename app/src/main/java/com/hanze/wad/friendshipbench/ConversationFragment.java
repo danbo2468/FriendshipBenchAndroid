@@ -5,6 +5,7 @@
 package com.hanze.wad.friendshipbench;
 
 import android.app.Fragment;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.ContextThemeWrapper;
@@ -18,12 +19,14 @@ import android.widget.Toast;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
+import com.google.gson.Gson;
+import com.hanze.wad.friendshipbench.Models.User;
+
 import java.net.URISyntaxException;
 
 public class ConversationFragment extends Fragment {
 
     private View view;
-    private String key = "privatekey123";
     private Socket socket;
 
     /**
@@ -44,8 +47,9 @@ public class ConversationFragment extends Fragment {
         // Handle the button for sending a new message.
         view.findViewById(R.id.buttonSendMessage).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                socket.emit("new message", "USERID", "Daniel Boonstra", ((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), "13:02", key);
-                showMessage("USERID", "Daniel Boonstra", ((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), "13:02", new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OwnMessage));
+                User user = ((MainActivity)getActivity()).user;
+                socket.emit("new message", user.getId(), user.getFullname(), ((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), "13:02", user.getChatKey());
+                showMyMessage(((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), "13:02");
                 ((EditText)view.findViewById(R.id.messageTextField)).setText("");
             }
         });
@@ -70,7 +74,10 @@ public class ConversationFragment extends Fragment {
         socket.connect();
 
         // Enter a room and set the handlers.
-        socket.emit("join room", key);
+        SharedPreferences sharedPref = getActivity().getPreferences(getActivity().getBaseContext().MODE_PRIVATE);
+        Gson gson = new Gson();
+        User user = gson.fromJson(sharedPref.getString("user", ""), User.class);
+        socket.emit("join room", user.getChatKey());
         socket.on("new message", handleNewMessage);
     }
 
@@ -83,19 +90,20 @@ public class ConversationFragment extends Fragment {
             getActivity().runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    showMessage(args[0].toString(), args[1].toString(), args[2].toString(), args[3].toString(), new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OtherMessage));
+                    showOtherMessage(args[0].toString(), args[1].toString(), args[2].toString(), args[3].toString());
                 }
             });
         }
     };
 
-    /**
-     * Showing a new message.
-     * @param message The message information.
-     * @param theme The style for the message.
-     */
-    private void showMessage(String user, String name, String message, String time, ContextThemeWrapper theme){
-        TextView label = new TextView(theme);
+    private void showOtherMessage(String user, String name, String message, String time){
+        TextView label = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OtherMessage));
+        label.setText(message);
+        ((LinearLayout)view.findViewById(R.id.chatLayout)).addView(label);
+    }
+
+    private void showMyMessage(String message, String time){
+        TextView label = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OwnMessage));
         label.setText(message);
         ((LinearLayout)view.findViewById(R.id.chatLayout)).addView(label);
     }

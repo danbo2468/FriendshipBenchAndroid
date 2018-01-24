@@ -135,7 +135,7 @@ public class NewQuestionnaireFragment extends Fragment {
         String currentTime = df.format(new Date());
 
         // Create a new questionnaire.
-        QuestionnairePost questionnaire = new QuestionnairePost("4216d9b5-43ae-47e8-b63a-ec200e8fc2a6", currentTime, (numberOfYesQuestions > YES_ANSWERS_FOR_REDFLAG || suicideQuestionIsYes));
+        QuestionnairePost questionnaire = new QuestionnairePost( ((MainActivity)getActivity()).user.getId(), currentTime, (numberOfYesQuestions > YES_ANSWERS_FOR_REDFLAG || suicideQuestionIsYes));
         JSONObject json = null;
         try {
             json = new JSONObject(new Gson().toJson(questionnaire));

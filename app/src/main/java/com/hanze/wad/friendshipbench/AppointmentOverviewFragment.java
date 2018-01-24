@@ -7,11 +7,13 @@ package com.hanze.wad.friendshipbench;
 import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
@@ -31,6 +33,7 @@ public class AppointmentOverviewFragment extends Fragment {
 
     private ArrayList<Appointment> appointmentsList = new ArrayList<>();
     private AppointmentListAdapter customAdapter;
+    private View view;
 
     /**
      * Initialize the view.
@@ -44,7 +47,7 @@ public class AppointmentOverviewFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
 
         // Get the current view.
-        View view = inflater.inflate(R.layout.appointment_overview_layout, container, false);
+        view = inflater.inflate(R.layout.appointment_overview_layout, container, false);
 
         // Set the AppointmentListAdapter as adapter for the listview.
         ListView listView = view.findViewById(R.id.appointmentListView);
@@ -76,12 +79,13 @@ public class AppointmentOverviewFragment extends Fragment {
         appointmentsList.clear();
 
         // Make an API GET request.
-        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.appointments_url), new VolleyCallback(){
+        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.appointments_url) + "?clientId=" + ((MainActivity)getActivity()).user.getId(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
                     jsonToAppointments(new JSONArray(result));
                 } catch (JSONException e) {
+                    ((TextView) view.findViewById(R.id.text_no_appointment)).setText(getString(R.string.no_appointment_message));
                     e.printStackTrace();
                 }
             }
