@@ -27,21 +27,24 @@ public abstract class CustomFragment extends Fragment {
     protected Context context;
     protected FragmentManager fragmentManager;
     protected Bundle bundle;
+    protected Fragment previousFragment;
 
     /**
      * The initializeSuper method which will be called by the child class.
      * @param layout The layout.
      * @param connectionRequired Whether or not a connection is required.
+     * @param previousFragment The previous fragment.
      * @param inflater The inflater.
      * @param container The container.
      */
-    public void initializeSuper(int layout, boolean connectionRequired, LayoutInflater inflater, @Nullable ViewGroup container) {
+    public void initializeSuper(int layout, boolean connectionRequired, Fragment previousFragment, LayoutInflater inflater, @Nullable ViewGroup container) {
 
         // Set all variables.
         view = inflater.inflate(layout, container, false);
         activity = (MainActivity) getActivity();
         context = activity.getBaseContext();
         fragmentManager = getFragmentManager();
+        this.previousFragment = previousFragment;
         bundle = new Bundle();
         activity.currentFragment = this;
 
@@ -76,6 +79,13 @@ public abstract class CustomFragment extends Fragment {
         ConnectivityManager connectivityManager = (ConnectivityManager) activity.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    protected boolean goBack(){
+        if(previousFragment == null)
+            return false;
+        switchFragment(previousFragment, false);
+        return true;
     }
 
     protected void initializeFragment() {}

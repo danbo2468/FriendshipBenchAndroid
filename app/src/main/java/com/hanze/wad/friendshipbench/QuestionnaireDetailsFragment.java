@@ -37,7 +37,7 @@ public class QuestionnaireDetailsFragment extends CustomFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        initializeSuper(R.layout.questionnaire_details_layout, true, inflater, container);
+        initializeSuper(R.layout.questionnaire_details_layout, true, new QuestionnaireOverviewFragment(), inflater, container);
         return view;
     }
 

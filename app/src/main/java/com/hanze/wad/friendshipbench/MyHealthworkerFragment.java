@@ -36,7 +36,7 @@ public class MyHealthworkerFragment extends CustomFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        initializeSuper(R.layout.my_healthworker_layout, true, inflater, container);
+        initializeSuper(R.layout.my_healthworker_layout, true, null, inflater, container);
         return view;
     }
 

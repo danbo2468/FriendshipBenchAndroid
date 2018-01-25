@@ -42,7 +42,7 @@ public class EditProfileFragment extends CustomFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        initializeSuper(R.layout.edit_profile_layout, true, inflater, container);
+        initializeSuper(R.layout.edit_profile_layout, true, new ProfileFragment(), inflater, container);
         return view;
     }
 

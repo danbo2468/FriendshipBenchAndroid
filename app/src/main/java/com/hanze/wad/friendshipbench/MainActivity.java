@@ -53,7 +53,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            if(!currentFragment.goBack()) {
+                super.onBackPressed();
+            }
         }
     }
 
@@ -62,23 +64,38 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
+        FragmentManager fragmentManager = getFragmentManager();
 
         if (id == R.id.nav_appointments) {
-            currentFragment.switchFragment(new AppointmentOverviewFragment(), true);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new AppointmentOverviewFragment())
+                    .commit();
         } else if (id == R.id.nav_questionnaires) {
-            currentFragment.switchFragment(new QuestionnaireOverviewFragment(), true);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new QuestionnaireOverviewFragment())
+                    .commit();
         } else if (id == R.id.nav_healthworker) {
             if(user.getHealthworkerId() != null) {
-                currentFragment.switchFragment(new MyHealthworkerFragment(), true);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame, new MyHealthworkerFragment())
+                        .commit();
             } else {
-                currentFragment.switchFragment(new ChooseHealthworkerFragment(), true);
+                fragmentManager.beginTransaction()
+                        .replace(R.id.content_frame, new ChooseHealthworkerFragment())
+                        .commit();
             }
         } else if (id == R.id.nav_conversations) {
-            currentFragment.switchFragment(new ConversationFragment(), true);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new ConversationFragment())
+                    .commit();
         } else if (id == R.id.nav_profile) {
-            currentFragment.switchFragment(new ProfileFragment(), true);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new ProfileFragment())
+                    .commit();
         } else if (id == R.id.nav_about) {
-            currentFragment.switchFragment(new AboutFragment(), true);
+            fragmentManager.beginTransaction()
+                    .replace(R.id.content_frame, new AboutFragment())
+                    .commit();
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

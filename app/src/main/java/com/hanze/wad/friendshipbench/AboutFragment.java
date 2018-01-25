@@ -27,7 +27,7 @@ public class AboutFragment extends CustomFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        initializeSuper(R.layout.about_layout, false, inflater, container);
+        initializeSuper(R.layout.about_layout, false, null, inflater, container);
         return view;
     }
 

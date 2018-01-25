@@ -46,7 +46,7 @@ public class ProfileFragment extends CustomFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        initializeSuper(R.layout.profile_layout, true, inflater, container);
+        initializeSuper(R.layout.profile_layout, true, null, inflater, container);
         return view;
     }
 

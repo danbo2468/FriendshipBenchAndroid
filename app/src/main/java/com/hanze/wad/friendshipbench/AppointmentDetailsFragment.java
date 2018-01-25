@@ -38,7 +38,7 @@ public class AppointmentDetailsFragment extends CustomFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        initializeSuper(R.layout.appointment_details_layout, true, inflater, container);
+        initializeSuper(R.layout.appointment_details_layout, true, new AppointmentOverviewFragment(), inflater, container);
         return view;
     }
 

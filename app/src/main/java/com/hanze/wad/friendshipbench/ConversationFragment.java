@@ -39,7 +39,7 @@ public class ConversationFragment extends CustomFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-        initializeSuper(R.layout.conversation_layout, true, inflater, container);
+        initializeSuper(R.layout.conversation_layout, true, null, inflater, container);
         return view;
     }
 
