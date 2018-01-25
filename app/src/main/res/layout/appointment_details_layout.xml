@@ -34,6 +34,19 @@
                     style="@style/ValueText" />
             </LinearLayout>
 
+            <LinearLayout style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/appointmentWhoLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_who" />
+
+                <TextView
+                    android:id="@+id/appointmentWhoValue"
+                    style="@style/ValueText" />
+
+            </LinearLayout>
+
             <LinearLayout
                 style="@style/LinearLabelValueLayout">
 
@@ -45,20 +58,11 @@
                 <TextView
                     android:id="@+id/appointmentWhereValue"
                     style="@style/ValueText" />
-            </LinearLayout>
 
-            <LinearLayout
-                style="@style/LinearLabelValueLayout">
-
-                <TextView
-                    android:id="@+id/appointmentWhoLabel"
-                    style="@style/LabelText"
-                    android:text="@string/label_who" />
-
-                <TextView
-                    android:id="@+id/appointmentWhoValue"
-                    style="@style/ValueText" />
-
+                <com.google.android.gms.maps.MapView
+                    android:id="@+id/mapView"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp" />
             </LinearLayout>
 
             <LinearLayout

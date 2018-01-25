@@ -4,6 +4,9 @@
 
 package com.hanze.wad.friendshipbench;
 
+import android.content.Context;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,6 +15,13 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.HttpResponse;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.ApiModels.AppointmentPut;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
@@ -21,10 +31,14 @@ import com.hanze.wad.friendshipbench.Models.Appointment;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.List;
+
 /**
  * Fragment controller for the appointment detail page.
  */
-public class AppointmentDetailsFragment extends CustomFragment {
+public class AppointmentDetailsFragment extends CustomFragment implements OnMapReadyCallback {
 
     private Appointment appointment;
 
@@ -39,6 +53,9 @@ public class AppointmentDetailsFragment extends CustomFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         initializeSuper(R.layout.appointment_details_layout, true, new AppointmentOverviewFragment(), inflater, container);
+        MapView mapView = view.findViewById(R.id.mapView);
+        mapView.onCreate(savedInstanceState);
+        mapView.getMapAsync(this);
         return view;
     }
 
@@ -154,5 +171,12 @@ public class AppointmentDetailsFragment extends CustomFragment {
                 Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void onMapReady(GoogleMap googleMap) {
+        LatLng marum = new LatLng(35, 6);
+        googleMap.addMarker(new MarkerOptions().position(marum).title("Bench Location"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLng(marum));
+        googleMap.animateCamera( CameraUpdateFactory.zoomTo( 2.0f ) );
     }
 }
