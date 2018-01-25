@@ -3,18 +3,15 @@
  */
 
 package com.hanze.wad.friendshipbench;
-import android.app.Fragment;
+
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import com.android.volley.VolleyError;
@@ -29,54 +26,54 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * This class is the controller for the questionnaire_overview_layout.xml.
+ * Fragment controller for the questionnaire overview page.
  */
-public class QuestionnaireOverviewFragment extends Fragment {
+public class QuestionnaireOverviewFragment extends CustomFragment {
 
     private ArrayList<Questionnaire> questionnairesList = new ArrayList<>();
-    private QuestionnaireListAdapter customAdapter;
-    private View view;
+    private QuestionnaireListAdapter questionnaireListAdapter;
 
     /**
-     * Initialize the view.
+     * The OnCreateView method which will be called first.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
-     * @return The view.
+     * @return The created view.
      */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        initializeSuper(R.layout.questionnaire_overview_layout, true, inflater, container);
+        return view;
+    }
 
-        // Get the current view.
-        view = inflater.inflate(R.layout.questionnaire_overview_layout, container, false);
+    /**
+     * The initialization of the specific fragment.
+     */
+    protected void initializeFragment(){
 
         // Set the QuestionnaireListAdapter as adapter for the listview.
-        ListView listView = view.findViewById(R.id.questionnaireListView);
-        customAdapter = new QuestionnaireListAdapter(getActivity().getBaseContext(), questionnairesList);
-        listView.setAdapter(customAdapter);
+        ListView questionnaireListView = view.findViewById(R.id.questionnaireListView);
+        questionnaireListAdapter= new QuestionnaireListAdapter(context, questionnairesList);
+        questionnaireListView.setAdapter(questionnaireListAdapter);
         fetchQuestionnaires();
 
         // Handle the OnItemClick method.
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        questionnaireListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
                 QuestionnaireDetailsFragment fragment = new QuestionnaireDetailsFragment();
-                Bundle args = new Bundle();
-                args.putInt("questionnaire_id", ((Questionnaire) parent.getItemAtPosition(position)).getId());
-                fragment.setArguments(args);
-                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+                bundle.putInt("questionnaire_id", ((Questionnaire) parent.getItemAtPosition(position)).getId());
+                fragment.setArguments(bundle);
+                switchFragment(fragment, true);
             }
         });
 
         // Handle the OnItemClick method for the Floating Action Button
         view.findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                getFragmentManager().beginTransaction().replace(R.id.content_frame, new NewQuestionnaireFragment()).commit();
+                switchFragment(new NewQuestionnaireFragment(), true);
             }
         });
-
-        // Return the view.
-        return view;
     }
 
     /**
@@ -88,8 +85,8 @@ public class QuestionnaireOverviewFragment extends Fragment {
         questionnairesList.clear();
 
         // Make an API GET request.
-        Log.d("TEST", getResources().getString(R.string.questionnaires_url) + "?clientId=" + ((MainActivity)getActivity()).user.getId());
-        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.questionnaires_url) + "?clientId=" + ((MainActivity)getActivity()).user.getId(), new VolleyCallback(){
+        Log.d("TEST", getResources().getString(R.string.questionnaires_url) + "?clientId=" + activity.user.getId());
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questionnaires_url) + "?clientId=" + ((MainActivity)getActivity()).user.getId(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -101,7 +98,7 @@ public class QuestionnaireOverviewFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -124,6 +121,6 @@ public class QuestionnaireOverviewFragment extends Fragment {
         }
 
         // Let the custom adapter know that the dataset has been changed.
-        customAdapter.notifyDataSetChanged();
+        questionnaireListAdapter.notifyDataSetChanged();
     }
 }

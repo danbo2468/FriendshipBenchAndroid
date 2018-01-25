@@ -5,7 +5,9 @@
 package com.hanze.wad.friendshipbench;
 
 import android.app.Fragment;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -28,39 +30,41 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * The fragment controller for profile_layout.
+ * Fragment controller for the profile page.
  */
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends CustomFragment {
 
     private Client client;
 
     /**
-     * Initialize the view.
+     * The OnCreateView method which will be called first.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
-     * @return The current view.
+     * @return The created view.
      */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        initializeSuper(R.layout.profile_layout, true, inflater, container);
+        return view;
+    }
 
-        // Get the current view.
-        View view = inflater.inflate(R.layout.profile_layout, container, false);
+    /**
+     * The initialization of the specific fragment.
+     */
+    protected void initializeFragment(){
 
         // Get the user
-        User user = ((MainActivity)getActivity()).user;
+        User user = activity.user;
         fetchProfile(user.getEmail());
 
         // Handle the OnItemClick method for the Floating Action Button
         view.findViewById(R.id.profileFab).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                getFragmentManager().beginTransaction().replace(R.id.content_frame, new EditProfileFragment()).commit();
+                switchFragment(new EditProfileFragment(), true);
             }
         });
-
-        // Return the view.
-        return view;
     }
 
     /**
@@ -70,7 +74,7 @@ public class ProfileFragment extends Fragment {
     private void fetchProfile(String email) {
 
         // Make an API GET request.
-        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.account_url) + "/currentUser/" + email, new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.account_url) + "/currentUser/" + email, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -81,7 +85,7 @@ public class ProfileFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -101,10 +105,10 @@ public class ProfileFragment extends Fragment {
     private void updateView(){
 
         // Update all the text items.
-        ((TextView) getActivity().findViewById(R.id.profileNameValue)).setText(client.getFullname());
-        ((TextView) getActivity().findViewById(R.id.profileGenderValue)).setText(client.getGenderString());
-        ((TextView) getActivity().findViewById(R.id.profileBirthdayValue)).setText(client.getReadableBirthday());
-        ((TextView) getActivity().findViewById(R.id.profileAddressValue)).setText(client.getAddress());
-        ((TextView) getActivity().findViewById(R.id.profileEmailValue)).setText(client.getEmail());
+        ((TextView) activity.findViewById(R.id.profileNameValue)).setText(client.getFullname());
+        ((TextView) activity.findViewById(R.id.profileGenderValue)).setText(client.getGenderString());
+        ((TextView) activity.findViewById(R.id.profileBirthdayValue)).setText(client.getReadableBirthday());
+        ((TextView) activity.findViewById(R.id.profileAddressValue)).setText(client.getAddress());
+        ((TextView) activity.findViewById(R.id.profileEmailValue)).setText(client.getEmail());
     }
 }

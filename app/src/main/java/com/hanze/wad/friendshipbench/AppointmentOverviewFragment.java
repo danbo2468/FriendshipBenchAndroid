@@ -4,10 +4,8 @@
 
 package com.hanze.wad.friendshipbench;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,47 +25,47 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 /**
- * The fragment controller for appointment_overview_layout.
+ * Fragment controller for the appointment overview page.
  */
-public class AppointmentOverviewFragment extends Fragment {
+public class AppointmentOverviewFragment extends CustomFragment {
 
     private ArrayList<Appointment> appointmentsList = new ArrayList<>();
-    private AppointmentListAdapter customAdapter;
-    private View view;
+    private AppointmentListAdapter appointmentListAdapter;
 
     /**
-     * Initialize the view.
+     * The OnCreateView method which will be called first.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
-     * @return The current view.
+     * @return The created view.
      */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        initializeSuper(R.layout.appointment_overview_layout, true, inflater, container);
+        return view;
+    }
 
-        // Get the current view.
-        view = inflater.inflate(R.layout.appointment_overview_layout, container, false);
+    /**
+     * The initialization of the specific fragment.
+     */
+    protected void initializeFragment(){
 
         // Set the AppointmentListAdapter as adapter for the listview.
-        ListView listView = view.findViewById(R.id.appointmentListView);
-        customAdapter = new AppointmentListAdapter(getActivity().getBaseContext(), appointmentsList);
-        listView.setAdapter(customAdapter);
+        ListView appointmentListView = view.findViewById(R.id.appointmentListView);
+        appointmentListAdapter = new AppointmentListAdapter(context, appointmentsList);
+        appointmentListView.setAdapter(appointmentListAdapter);
         fetchAppointments();
 
         // Handle the OnItemClick method for a listitem. It will open a detailed view for the selected appointment.
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        appointmentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
                 AppointmentDetailsFragment fragment = new AppointmentDetailsFragment();
-                Bundle values = new Bundle();
-                values.putInt("appointment_id", ((Appointment) parent.getItemAtPosition(position)).getId());
-                fragment.setArguments(values);
-                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+                bundle.putInt("appointment_id", ((Appointment) parent.getItemAtPosition(position)).getId());
+                fragment.setArguments(bundle);
+                switchFragment(fragment, true);
             }
         });
-
-        // Return the view.
-        return view;
     }
 
     /**
@@ -79,7 +77,7 @@ public class AppointmentOverviewFragment extends Fragment {
         appointmentsList.clear();
 
         // Make an API GET request.
-        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.appointments_url) + "?clientId=" + ((MainActivity)getActivity()).user.getId(), new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.appointments_url) + "?clientId=" + activity.user.getId(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -91,7 +89,7 @@ public class AppointmentOverviewFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -114,6 +112,6 @@ public class AppointmentOverviewFragment extends Fragment {
         }
 
         // Let the custom adapter know that the dataset has been changed.
-        customAdapter.notifyDataSetChanged();
+        appointmentListAdapter.notifyDataSetChanged();
     }
 }

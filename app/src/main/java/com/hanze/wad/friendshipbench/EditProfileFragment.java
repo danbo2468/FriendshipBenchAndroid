@@ -4,11 +4,8 @@
 
 package com.hanze.wad.friendshipbench;
 
-import android.app.Fragment;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,46 +22,47 @@ import com.hanze.wad.friendshipbench.Controllers.ClientController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Client;
 import com.hanze.wad.friendshipbench.Models.User;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * The fragment controller for edit_profile_layout.
+ * Fragment controller for the edit profile page.
  */
-public class EditProfileFragment extends Fragment {
+public class EditProfileFragment extends CustomFragment {
 
     private Client client;
 
     /**
-     * Initialize the view.
+     * The OnCreateView method which will be called first.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
-     * @return The current view.
+     * @return The created view.
      */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        initializeSuper(R.layout.edit_profile_layout, true, inflater, container);
+        return view;
+    }
 
-        // Get the current view.
-        View view = inflater.inflate(R.layout.edit_profile_layout, container, false);
+    /**
+     * The initialization of the specific fragment.
+     */
+    protected void initializeFragment(){
 
         // Get the current client email.
-        User user = ((MainActivity)getActivity()).user;
+        User user = activity.user;
         fetchProfile(user.getEmail());
 
         // Handle the OnItemClick method for update button. It will do an API PUT request.
         view.findViewById(R.id.updateProfileButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(getActivity().INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+                InputMethodManager inputMethodManager = (InputMethodManager) activity.getSystemService(activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(activity.getCurrentFocus().getWindowToken(), 0);
                 updateProfile();
             }
         });
-
-        // Return the view.
-        return view;
     }
 
     /**
@@ -74,7 +72,7 @@ public class EditProfileFragment extends Fragment {
     private void fetchProfile(String email) {
 
         // Make an API GET request.
-        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.account_url) + "/currentUser/" + email, new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.account_url) + "/currentUser/" + email, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -85,7 +83,7 @@ public class EditProfileFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -105,21 +103,24 @@ public class EditProfileFragment extends Fragment {
     private void updateView() {
 
         // Update all the text items.
-        ((TextView) getActivity().findViewById(R.id.editFirstnameField)).setText(client.getFirstname());
-        ((TextView) getActivity().findViewById(R.id.editLastnameField)).setText(client.getLastname());
-        ((TextView) getActivity().findViewById(R.id.editStreetnameField)).setText(client.getStreetname());
-        ((TextView) getActivity().findViewById(R.id.editHousenumberField)).setText(client.getHousenmber());
-        ((TextView) getActivity().findViewById(R.id.editDistrictField)).setText(client.getDistrict());
-        ((TextView) getActivity().findViewById(R.id.editProvinceField)).setText(client.getProvince());
+        ((TextView) activity.findViewById(R.id.editFirstnameField)).setText(client.getFirstname());
+        ((TextView) activity.findViewById(R.id.editLastnameField)).setText(client.getLastname());
+        ((TextView) activity.findViewById(R.id.editStreetnameField)).setText(client.getStreetname());
+        ((TextView) activity.findViewById(R.id.editHousenumberField)).setText(client.getHousenmber());
+        ((TextView) activity.findViewById(R.id.editDistrictField)).setText(client.getDistrict());
+        ((TextView) activity.findViewById(R.id.editProvinceField)).setText(client.getProvince());
 
         // Update the gender radio buttons.
-        ((RadioButton) getActivity().findViewById(R.id.editGenderMale)).setChecked(client.getGender().equals("male"));
-        ((RadioButton) getActivity().findViewById(R.id.editGenderFemale)).setChecked(client.getGender().equals("female"));
+        ((RadioButton) activity.findViewById(R.id.editGenderMale)).setChecked(client.getGender().equals("male"));
+        ((RadioButton) activity.findViewById(R.id.editGenderFemale)).setChecked(client.getGender().equals("female"));
 
     }
 
+    /**
+     * Update the client's profile.
+     */
     private void updateProfile(){
-        ClientPut clientPut = new ClientPut(((EditText)getActivity().findViewById(R.id.editStreetnameField)).getText().toString(), ((EditText)getActivity().findViewById(R.id.editHousenumberField)).getText().toString(), ((EditText)getActivity().findViewById(R.id.editProvinceField)).getText().toString(), ((EditText)getActivity().findViewById(R.id.editDistrictField)).getText().toString());
+        ClientPut clientPut = new ClientPut(((EditText)activity.findViewById(R.id.editStreetnameField)).getText().toString(), ((EditText)activity.findViewById(R.id.editHousenumberField)).getText().toString(), ((EditText)activity.findViewById(R.id.editProvinceField)).getText().toString(), ((EditText)activity.findViewById(R.id.editDistrictField)).getText().toString());
         JSONObject json = null;
         try {
             json = new JSONObject(new Gson().toJson(clientPut));
@@ -127,17 +128,16 @@ public class EditProfileFragment extends Fragment {
             e.printStackTrace();
         }
 
-        Log.d("TEST", json.toString());
-
         // Make an API PUT request.
-        ApiController.getInstance(getActivity().getBaseContext()).putRequest(getResources().getString(R.string.account_url) + "/edit/" + client.getEmail(), json, new VolleyCallback(){
+        ApiController.getInstance(context).putRequest(getResources().getString(R.string.account_url) + "/edit/" + client.getEmail(), json, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
-                Toast.makeText(getActivity().getBaseContext(), "Your profile details have been updated.", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "Your profile details have been updated.", Toast.LENGTH_LONG).show();
+                switchFragment(new ProfileFragment(), false);
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }

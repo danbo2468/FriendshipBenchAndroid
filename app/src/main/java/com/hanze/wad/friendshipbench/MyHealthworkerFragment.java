@@ -4,7 +4,6 @@
 
 package com.hanze.wad.friendshipbench;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,44 +11,40 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
-import com.hanze.wad.friendshipbench.Controllers.ClientController;
 import com.hanze.wad.friendshipbench.Controllers.HealthworkerController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
-import com.hanze.wad.friendshipbench.Models.Client;
 import com.hanze.wad.friendshipbench.Models.Healthworker;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * The fragment controller for my_healthworker_layout.
+ * Fragment controller for the my healhtworker page.
  */
-public class MyHealthworkerFragment extends Fragment {
+public class MyHealthworkerFragment extends CustomFragment {
 
     private Healthworker healthworker;
 
     /**
-     * Initialize the view.
+     * The OnCreateView method which will be called first.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
-     * @return The current view.
+     * @return The created view.
      */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-
-        // Get the current view.
-        View view = inflater.inflate(R.layout.my_healthworker_layout, container, false);
-
-        // Get the user information
-        fetchHealthworker("06f5e5b1-9ce4-4eb7-8632-3ab593680e7d");
-
-        // Return the view.
+        initializeSuper(R.layout.my_healthworker_layout, true, inflater, container);
         return view;
+    }
+
+    /**
+     * The initialization of the specific fragment.
+     */
+    protected void initializeFragment(){
+        fetchHealthworker(activity.user.getHealthworkerId());
     }
 
     /**
@@ -59,7 +54,7 @@ public class MyHealthworkerFragment extends Fragment {
     private void fetchHealthworker(String id) {
 
         // Make an API GET request.
-        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.healthworkers_url) + "/" + id, new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.healthworkers_url) + "/" + id, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -70,7 +65,7 @@ public class MyHealthworkerFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -90,9 +85,9 @@ public class MyHealthworkerFragment extends Fragment {
     private void updateView(){
 
         // Update all the text items.
-        ((TextView) getActivity().findViewById(R.id.healthworkerNameValue)).setText(healthworker.getFullName());
-        ((TextView) getActivity().findViewById(R.id.healthworkerGenderValue)).setText(healthworker.getGenderString());
-        ((TextView) getActivity().findViewById(R.id.healthworkerBirthdayValue)).setText(healthworker.getReadableBirthday());
-        ((TextView) getActivity().findViewById(R.id.healthworkerEmailValue)).setText(healthworker.getEmail());
+        ((TextView) activity.findViewById(R.id.healthworkerNameValue)).setText(healthworker.getFullName());
+        ((TextView) activity.findViewById(R.id.healthworkerGenderValue)).setText(healthworker.getGenderString());
+        ((TextView) activity.findViewById(R.id.healthworkerBirthdayValue)).setText(healthworker.getReadableBirthday());
+        ((TextView) activity.findViewById(R.id.healthworkerEmailValue)).setText(healthworker.getEmail());
     }
 }

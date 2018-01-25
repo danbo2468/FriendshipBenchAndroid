@@ -20,35 +20,33 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * This class is the controller for the questionnaire_details_layout.xml.
+ * Fragment controller for the questionnaire detail page.
  */
-public class QuestionnaireDetailsFragment extends Fragment {
+public class QuestionnaireDetailsFragment extends CustomFragment {
 
-    private View view;
     private Questionnaire questionnaire;
     private int id;
 
     /**
-     * Initialize the view.
+     * The OnCreateView method which will be called first.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
-     * @return The view.
+     * @return The created view.
      */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
-
-        // Get the current view.
-        view = inflater.inflate(R.layout.questionnaire_details_layout, container, false);
-
-        // Get the current questionnaire ID.
-        Bundle bundle = getArguments();
-        this.id = bundle.getInt("questionnaire_id");
-        fetchQuestionnaire(this.id);
-
-        // Return the view.
+        initializeSuper(R.layout.questionnaire_details_layout, true, inflater, container);
         return view;
+    }
+
+    /**
+     * The initialization of the specific fragment.
+     */
+    protected void initializeFragment(){
+        this.id = getArguments().getInt("questionnaire_id");
+        fetchQuestionnaire(this.id);
     }
 
     /**
@@ -58,7 +56,7 @@ public class QuestionnaireDetailsFragment extends Fragment {
     private void fetchQuestionnaire(int id) {
 
         // Make an API GET request.
-        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.questionnaires_url) + "/" + id, new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questionnaires_url) + "/" + id, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -69,7 +67,7 @@ public class QuestionnaireDetailsFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -89,7 +87,7 @@ public class QuestionnaireDetailsFragment extends Fragment {
     private void updateView(){
 
         // Update the header.
-        ((TextView) getActivity().findViewById(R.id.questionnaireTextHeader)).setText("Questionnaire " + this.id);
+        ((TextView) activity.findViewById(R.id.questionnaireTextHeader)).setText("Questionnaire " + this.id);
 
         // Add a red flag icon to the header is needed.
         if(questionnaire.isRedflag())
@@ -103,16 +101,16 @@ public class QuestionnaireDetailsFragment extends Fragment {
 
             // Create a new linearLabelValueLayout.
             Answer answer = questionnaire.getAnswers().get(i);
-            ContextThemeWrapper layoutContext = new ContextThemeWrapper(getActivity().getBaseContext(), R.style.LinearLabelValueLayout);
+            ContextThemeWrapper layoutContext = new ContextThemeWrapper(activity.getBaseContext(), R.style.LinearLabelValueLayout);
             LinearLayout linearLabelValueLayout = new LinearLayout(layoutContext);
 
             // Create a new label text field.
-            ContextThemeWrapper labelContext = new ContextThemeWrapper(getActivity().getBaseContext(), R.style.LabelText);
+            ContextThemeWrapper labelContext = new ContextThemeWrapper(activity.getBaseContext(), R.style.LabelText);
             TextView label = new TextView(labelContext);
             label.setText(answer.getQuestion());
 
             // Create a new value text field.
-            ContextThemeWrapper valueContext = new ContextThemeWrapper(getActivity().getBaseContext(), R.style.ValueText);
+            ContextThemeWrapper valueContext = new ContextThemeWrapper(activity.getBaseContext(), R.style.ValueText);
             TextView value = new TextView(valueContext);
             value.setText(answer.getAnswer());
 

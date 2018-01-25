@@ -5,6 +5,8 @@
 package com.hanze.wad.friendshipbench;
 
 import android.app.Fragment;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -38,26 +40,33 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * This class is the controller for the choose_healthworker_layout.xml.
+ * Fragment controller for the choose healthworker page.
  */
-public class ChooseHealthworkerFragment extends Fragment {
+public class ChooseHealthworkerFragment extends CustomFragment {
 
     private ArrayList<Healthworker> healthworkerList = new ArrayList<>();
     private int currentHealthworker;
 
     /**
-     * This method is called when a view is opened.
+     * The OnCreateView method which will be called first.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
-     * @return The view.
+     * @return The created view.
      */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        initializeSuper(R.layout.choose_healthworker_layout, true, inflater, container);
+        return view;
+    }
 
-        // Get the current view.
-        View view = inflater.inflate(R.layout.choose_healthworker_layout, container, false);
+    /**
+     * The initialization of the specific fragment.
+     */
+    protected void initializeFragment(){
+
+        // Fetch the list with healthworkers.
         fetchHealthworkers();
 
         // Handle the OnItemClick method for the next button.
@@ -80,9 +89,6 @@ public class ChooseHealthworkerFragment extends Fragment {
                 chooseHealthworker();
             }
         });
-
-        // Return the view.
-        return view;
     }
 
     /**
@@ -91,7 +97,7 @@ public class ChooseHealthworkerFragment extends Fragment {
     private void fetchHealthworkers() {
 
         // Make an API GET request.
-        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.healthworkers_url), new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.healthworkers_url), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -103,7 +109,7 @@ public class ChooseHealthworkerFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -124,6 +130,11 @@ public class ChooseHealthworkerFragment extends Fragment {
         }
     }
 
+    /**
+     * Get the next healthworker.
+     * @param direction The direction to go. -1 indicates back, 0 indicates the start of the list and +1 indicates forward.
+     * @return The healthworker.
+     */
     private Healthworker getHealthworker(int direction){
         if(direction == 0){
             currentHealthworker = 0;
@@ -138,10 +149,12 @@ public class ChooseHealthworkerFragment extends Fragment {
             else
                 currentHealthworker++;
         }
-
         return healthworkerList.get(currentHealthworker);
     }
 
+    /**
+     * Set the current healthworker as your healthworker.
+     */
     private void chooseHealthworker(){
 
         // Create a new add healthworker model.
@@ -154,25 +167,29 @@ public class ChooseHealthworkerFragment extends Fragment {
         }
 
         // Make an API POST request.
-        ApiController.getInstance(getActivity().getBaseContext()).putRequest(getResources().getString(R.string.account_url) + "/addHealthworker/daniel.boonstra@outlook.com", json, new VolleyCallback(){
+        ApiController.getInstance(context).putRequest(getResources().getString(R.string.account_url) + "/addHealthworker/daniel.boonstra@outlook.com", json, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
-                Toast.makeText(getActivity().getBaseContext(), "You have chosen " + healthworkerList.get(currentHealthworker).getFullName() + " as your healthworker.", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "You have chosen " + healthworkerList.get(currentHealthworker).getFullName() + " as your healthworker.", Toast.LENGTH_LONG).show();
                 getFragmentManager().beginTransaction().replace(R.id.content_frame, new MyHealthworkerFragment()).commit();
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }
 
+    /**
+     * Update the view.
+     * @param healthworker The healthworker model with the information.
+     */
     private void showHealthworker(Healthworker healthworker){
 
         // Update all the text items.
-        ((TextView) getActivity().findViewById(R.id.healthworkerNameValue)).setText(healthworker.getFullName());
-        ((TextView) getActivity().findViewById(R.id.healthworkerGenderValue)).setText(healthworker.getGenderString());
-        ((TextView) getActivity().findViewById(R.id.healthworkerBirthdayValue)).setText(healthworker.getReadableBirthday());
-        ((TextView) getActivity().findViewById(R.id.healthworkerEmailValue)).setText(healthworker.getEmail());
+        ((TextView) activity.findViewById(R.id.healthworkerNameValue)).setText(healthworker.getFullName());
+        ((TextView) activity.findViewById(R.id.healthworkerGenderValue)).setText(healthworker.getGenderString());
+        ((TextView) activity.findViewById(R.id.healthworkerBirthdayValue)).setText(healthworker.getReadableBirthday());
+        ((TextView) activity.findViewById(R.id.healthworkerEmailValue)).setText(healthworker.getEmail());
     }
 }

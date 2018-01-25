@@ -4,7 +4,6 @@
 
 package com.hanze.wad.friendshipbench;
 
-import android.app.Fragment;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,29 +19,36 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
-import com.hanze.wad.friendshipbench.Models.Answer;
 import com.hanze.wad.friendshipbench.Models.User;
-
 import java.net.URISyntaxException;
 
-public class ConversationFragment extends Fragment {
+/**
+ * Fragment controller for the chat page.
+ */
+public class ConversationFragment extends CustomFragment {
 
-    private View view;
     private Socket socket;
 
     /**
-     * This method is called when a view is opened.
+     * The OnCreateView method which will be called first.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
-     * @return The view.
+     * @return The created view.
      */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        initializeSuper(R.layout.conversation_layout, true, inflater, container);
+        return view;
+    }
 
-        // Get the current view.
-        view = inflater.inflate(R.layout.conversation_layout, container, false);
+    /**
+     * The initialization of the specific fragment.
+     */
+    protected void initializeFragment(){
+
+        // Create a connection with the Node.JS server.
         initializeSocket();
 
         // Handle the button for sending a new message.
@@ -54,9 +60,6 @@ public class ConversationFragment extends Fragment {
                 ((EditText)view.findViewById(R.id.messageTextField)).setText("");
             }
         });
-
-        // Return the view.
-        return view;
     }
 
     /**
@@ -69,13 +72,13 @@ public class ConversationFragment extends Fragment {
             socket = IO.socket(getResources().getString(R.string.chat_url));
         } catch (URISyntaxException e) {
             e.printStackTrace();
-            Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+            Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             return;
         }
         socket.connect();
 
         // Enter a room and set the handlers.
-        SharedPreferences sharedPref = getActivity().getPreferences(getActivity().getBaseContext().MODE_PRIVATE);
+        SharedPreferences sharedPref = activity.getPreferences(context.MODE_PRIVATE);
         Gson gson = new Gson();
         User user = gson.fromJson(sharedPref.getString("user", ""), User.class);
         socket.emit("join room", user.getChatKey());
@@ -97,6 +100,13 @@ public class ConversationFragment extends Fragment {
         }
     };
 
+    /**
+     * Show the messages of your healthworker.
+     * @param user The person's ID.
+     * @param name The person's name.
+     * @param message The message.
+     * @param time The time.
+     */
     private void showOtherMessage(String user, String name, String message, String time){
 
         // Create a new linearLabelValueLayout.
@@ -115,6 +125,11 @@ public class ConversationFragment extends Fragment {
         ((LinearLayout)view.findViewById(R.id.chatLayout)).addView(chatMessage);
     }
 
+    /**
+     * Show the messages of yourself.
+     * @param message The message.
+     * @param time The time.
+     */
     private void showMyMessage(String message, String time){
 
         // Create a new linearLabelValueLayout.

@@ -4,7 +4,6 @@
 
 package com.hanze.wad.friendshipbench;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -12,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.ApiModels.AppointmentPut;
@@ -24,29 +22,33 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /**
- * The fragment controller for appointment_details_layout.
+ * Fragment controller for the appointment detail page.
  */
-public class AppointmentDetailsFragment extends Fragment {
+public class AppointmentDetailsFragment extends CustomFragment {
 
     private Appointment appointment;
 
     /**
-     * Initialize the view.
+     * The OnCreateView method which will be called first.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
-     * @return The current view.
+     * @return The created view.
      */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        initializeSuper(R.layout.appointment_details_layout, true, inflater, container);
+        return view;
+    }
 
-        // Get the current view.
-        View view = inflater.inflate(R.layout.appointment_details_layout, container, false);
+    /**
+     * The initialization of the specific fragment.
+     */
+    protected void initializeFragment(){
 
-        // Get the current appointment ID.
-        Bundle bundle = getArguments();
-        fetchAppointment(bundle.getInt("appointment_id"));
+        // Fetch a new appointment.
+        fetchAppointment(getArguments().getInt("appointment_id"));
 
         // Handle the OnItemClick method for the accept button. It will do an API PUT request.
         view.findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
@@ -61,9 +63,6 @@ public class AppointmentDetailsFragment extends Fragment {
                 updateStatus(false);
             }
         });
-
-        // Return the view.
-        return view;
     }
 
     /**
@@ -73,7 +72,7 @@ public class AppointmentDetailsFragment extends Fragment {
     private void fetchAppointment(int id) {
 
         // Make an API GET request.
-        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.appointments_url) + "/" + id, new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.appointments_url) + "/" + id, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -84,7 +83,7 @@ public class AppointmentDetailsFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -104,22 +103,22 @@ public class AppointmentDetailsFragment extends Fragment {
     private void updateView(){
 
         // Update all the text items.
-        ((TextView) getActivity().findViewById(R.id.appointmentTextHeader)).setText(appointment.getSummary());
-        ((TextView) getActivity().findViewById(R.id.appointmentWhenValue)).setText(appointment.getReadableTime());
-        ((TextView) getActivity().findViewById(R.id.appointmentWhoValue)).setText("You and " + appointment.getHealthworker().getFullName());
-        ((TextView) getActivity().findViewById(R.id.appointmentWhereValue)).setText(appointment.getBench().getFullLocation());
-        ((TextView) getActivity().findViewById(R.id.appointmentStatusValue)).setText(appointment.getStatus().getName());
+        ((TextView) activity.findViewById(R.id.appointmentTextHeader)).setText(appointment.getSummary());
+        ((TextView) activity.findViewById(R.id.appointmentWhenValue)).setText(appointment.getReadableTime());
+        ((TextView) activity.findViewById(R.id.appointmentWhoValue)).setText("You and " + appointment.getHealthworker().getFullName());
+        ((TextView) activity.findViewById(R.id.appointmentWhereValue)).setText(appointment.getBench().getFullLocation());
+        ((TextView) activity.findViewById(R.id.appointmentStatusValue)).setText(appointment.getStatus().getName());
 
         // Show or hide the right buttons according to the current appointment status.
         if(appointment.getStatus().getId() == 1){
-            (getActivity().findViewById(R.id.acceptButton)).setVisibility(View.VISIBLE);
-            (getActivity().findViewById(R.id.cancelButton)).setVisibility(View.VISIBLE);
+            (activity.findViewById(R.id.acceptButton)).setVisibility(View.VISIBLE);
+            (activity.findViewById(R.id.cancelButton)).setVisibility(View.VISIBLE);
         } else if(appointment.getStatus().getId() == 2){
-            (getActivity().findViewById(R.id.acceptButton)).setVisibility(View.GONE);
-            (getActivity().findViewById(R.id.cancelButton)).setVisibility(View.VISIBLE);
+            (activity.findViewById(R.id.acceptButton)).setVisibility(View.GONE);
+            (activity.findViewById(R.id.cancelButton)).setVisibility(View.VISIBLE);
         } else {
-            (getActivity().findViewById(R.id.acceptButton)).setVisibility(View.GONE);
-            (getActivity().findViewById(R.id.cancelButton)).setVisibility(View.GONE);
+            (activity.findViewById(R.id.acceptButton)).setVisibility(View.GONE);
+            (activity.findViewById(R.id.cancelButton)).setVisibility(View.GONE);
         }
     }
 
@@ -143,16 +142,16 @@ public class AppointmentDetailsFragment extends Fragment {
         }
 
         // Make an API PUT request.
-        ApiController.getInstance(getActivity().getBaseContext()).putRequest(getResources().getString(R.string.appointments_url) + "/" + appointment.getId(), json, new VolleyCallback(){
+        ApiController.getInstance(context).putRequest(getResources().getString(R.string.appointments_url) + "/" + appointment.getId(), json, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
-                Toast.makeText(getActivity().getBaseContext(), "The status for this appointment has been updated.", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "The status for this appointment has been updated.", Toast.LENGTH_LONG).show();
                 fetchAppointment(appointment.getId());
                 updateView();
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }

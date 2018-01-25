@@ -1,5 +1,6 @@
 package com.hanze.wad.friendshipbench;
 
+import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -18,6 +19,7 @@ import com.hanze.wad.friendshipbench.Models.User;
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     public User user;
+    public CustomFragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +33,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         drawer.addDrawerListener(toggle);
         toggle.syncState();
 
-        user = new User("4216d9b5-43ae-47e8-b63a-ec200e8fc2a6", "daniel.boonstra@outlook.com", "Mustafa", "Nig Nog", "06f5e5b1-9ce4-4eb7-8632-3ab59380e7d");
+        user = new User("4216d9b5-43ae-47e8-b63a-ec200e8fc2a6", "daniel.boonstra@outlook.com", "Daniel", "Boonstra", "06f5e5b1-9ce4-4eb7-8632-3ab59380e7d");
         Gson gson = new Gson();
         String userJson = gson.toJson(user);
         SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
@@ -60,38 +62,23 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         // Handle navigation view item clicks here.
         int id = item.getItemId();
-        FragmentManager fragmentManager = getFragmentManager();
 
         if (id == R.id.nav_appointments) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new AppointmentOverviewFragment())
-                    .commit();
+            currentFragment.switchFragment(new AppointmentOverviewFragment(), true);
         } else if (id == R.id.nav_questionnaires) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new QuestionnaireOverviewFragment())
-                    .commit();
+            currentFragment.switchFragment(new QuestionnaireOverviewFragment(), true);
         } else if (id == R.id.nav_healthworker) {
             if(user.getHealthworkerId() != null) {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame, new MyHealthworkerFragment())
-                        .commit();
+                currentFragment.switchFragment(new MyHealthworkerFragment(), true);
             } else {
-                fragmentManager.beginTransaction()
-                        .replace(R.id.content_frame, new ChooseHealthworkerFragment())
-                        .commit();
+                currentFragment.switchFragment(new ChooseHealthworkerFragment(), true);
             }
         } else if (id == R.id.nav_conversations) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new ConversationFragment())
-                    .commit();
+            currentFragment.switchFragment(new ConversationFragment(), true);
         } else if (id == R.id.nav_profile) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new ProfileFragment())
-                    .commit();
+            currentFragment.switchFragment(new ProfileFragment(), true);
         } else if (id == R.id.nav_about) {
-            fragmentManager.beginTransaction()
-                    .replace(R.id.content_frame, new AboutFragment())
-                    .commit();
+            currentFragment.switchFragment(new AboutFragment(), true);
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

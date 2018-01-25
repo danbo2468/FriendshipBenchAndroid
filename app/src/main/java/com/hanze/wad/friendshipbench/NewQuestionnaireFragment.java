@@ -1,15 +1,12 @@
 package com.hanze.wad.friendshipbench;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.ApiModels.AnswerPost;
@@ -29,9 +26,9 @@ import java.util.ArrayList;
 import java.util.Date;
 
 /**
- * This class is the controller for the new_questionnaire_layout.xml.
+ * Fragment controller for the new questionnaire page.
  */
-public class NewQuestionnaireFragment extends Fragment {
+public class NewQuestionnaireFragment extends CustomFragment {
 
     private static final int SUICIDE_QUESTION = 11;
     private static final int YES_ANSWERS_FOR_REDFLAG = 8;
@@ -44,18 +41,25 @@ public class NewQuestionnaireFragment extends Fragment {
     private int questionnaireId;
 
     /**
-     * This method is called when a view is opened.
+     * The OnCreateView method which will be called first.
      * @param inflater The inflater.
      * @param container The container.
      * @param savedInstanceState The saved instance state.
-     * @return The view.
+     * @return The created view.
      */
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
+        initializeSuper(R.layout.new_questionnaire_layout, true, inflater, container);
+        return view;
+    }
 
-        // Get the current view.
-        View view = inflater.inflate(R.layout.new_questionnaire_layout, container, false);
+    /**
+     * The initialization of the specific fragment.
+     */
+    protected void initializeFragment(){
+
+        // Get all the questions.
         fetchQuestions();
 
         // Handle the OnItemClick method for the yes button.
@@ -69,15 +73,11 @@ public class NewQuestionnaireFragment extends Fragment {
         });
 
         // Handle the OnItemClick method for the no button.
-        Button buttonNo = view.findViewById(R.id.buttonNo);
-        buttonNo.setOnClickListener(new View.OnClickListener() {
+        view.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 saveAnswerAndContinue("No");
             }
         });
-
-        // Return the view.
-        return view;
     }
 
     /**
@@ -86,7 +86,7 @@ public class NewQuestionnaireFragment extends Fragment {
     private void fetchQuestions() {
 
         // Make an API GET request.
-        ApiController.getInstance(getActivity().getBaseContext()).getRequest(getResources().getString(R.string.questions_url), new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questions_url), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -98,7 +98,7 @@ public class NewQuestionnaireFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -109,8 +109,8 @@ public class NewQuestionnaireFragment extends Fragment {
     private void showNewQuestion(){
         Question question = questionList.get(currentQuestion);
         String progress = (currentQuestion+1) + "/" + questionList.size();
-        ((TextView) getActivity().findViewById(R.id.questionText)).setText(question.getQuestion());
-        ((TextView) getActivity().findViewById(R.id.progressText)).setText(progress);
+        ((TextView) activity.findViewById(R.id.questionText)).setText(question.getQuestion());
+        ((TextView) activity.findViewById(R.id.progressText)).setText(progress);
     }
 
     /**
@@ -130,12 +130,16 @@ public class NewQuestionnaireFragment extends Fragment {
      */
     private void submitQuestionnaire() {
 
+        // Hide the buttons.
+        view.findViewById(R.id.buttonYes).setVisibility(View.INVISIBLE);
+        view.findViewById(R.id.buttonNo).setVisibility(View.INVISIBLE);
+
         // Convert the current date to the right format.
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         String currentTime = df.format(new Date());
 
         // Create a new questionnaire.
-        QuestionnairePost questionnaire = new QuestionnairePost( ((MainActivity)getActivity()).user.getId(), currentTime, (numberOfYesQuestions > YES_ANSWERS_FOR_REDFLAG || suicideQuestionIsYes));
+        QuestionnairePost questionnaire = new QuestionnairePost(activity.user.getId(), currentTime, (numberOfYesQuestions > YES_ANSWERS_FOR_REDFLAG || suicideQuestionIsYes));
         JSONObject json = null;
         try {
             json = new JSONObject(new Gson().toJson(questionnaire));
@@ -144,7 +148,7 @@ public class NewQuestionnaireFragment extends Fragment {
         }
 
         // Make an API POST request.
-        ApiController.getInstance(getActivity().getBaseContext()).postRequest(getResources().getString(R.string.questionnaires_url), json, new VolleyCallback(){
+        ApiController.getInstance(context).postRequest(getResources().getString(R.string.questionnaires_url), json, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 JSONObject response = null;
@@ -157,7 +161,7 @@ public class NewQuestionnaireFragment extends Fragment {
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -187,19 +191,18 @@ public class NewQuestionnaireFragment extends Fragment {
 
 
         // Make an API POST request.
-        ApiController.getInstance(getActivity().getBaseContext()).postRequest(getResources().getString(R.string.answers_url), json, new VolleyCallback(){
+        ApiController.getInstance(context).postRequest(getResources().getString(R.string.answers_url), json, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
-                Toast.makeText(getActivity().getBaseContext(), "You've completed the SSQ14 questionnaire.", Toast.LENGTH_LONG).show();
+                Toast.makeText(context, "You've completed the SSQ14 questionnaire.", Toast.LENGTH_LONG).show();
                 QuestionnaireDetailsFragment fragment = new QuestionnaireDetailsFragment();
-                Bundle args = new Bundle();
-                args.putInt("questionnaire_id", questionnaireId);
-                fragment.setArguments(args);
-                getFragmentManager().beginTransaction().replace(R.id.content_frame, fragment).commit();
+                bundle.putInt("questionnaire_id", questionnaireId);
+                fragment.setArguments(bundle);
+                switchFragment(fragment, true);
             }
             @Override
             public void onError(VolleyError result){
-                Toast.makeText(getActivity().getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
     }

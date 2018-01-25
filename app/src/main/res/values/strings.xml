@@ -25,6 +25,8 @@
     <string name="text_full_about">We try to reach out to people in Zimbabwe who are in need of help. Think about people who suffer from mental disorders, unwanted pregnancies or anything else that comes with (mental) problems. \n\nWe work with a SSQ-14, a question list which can determine if you are in need of help.</string>
     <string name="text_full_ssq14">By filling in this SSQ14 questionnaire, we can determine if you are in need of help.</string>
 
+    <string name="website_url">http://www.friendshipbenchzimbabwe.org</string>
+
     <string name="button_more_information">More information</string>
     <string name="button_accept_appointment">Accept appointment</string>
     <string name="button_cancel_appointment">Cancel appointment</string>
@@ -58,4 +60,5 @@
     <string name="no_appointment_message">No appointments found.</string>
 
     <string name="error_message">Sorry, something went wrong. Please try again later.</string>
+    <string name="no_connection_message">No internet connection found.</string>
 </resources>
