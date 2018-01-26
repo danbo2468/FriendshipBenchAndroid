@@ -6,6 +6,7 @@
     <string name="answers_url">http://10.0.2.2:54618/api/answers</string>
     <string name="account_url">http://10.0.2.2:54618/api/account</string>
     <string name="healthworkers_url">http://10.0.2.2:54618/api/healthworkers</string>
+    <string name="authentication_url">https://hpa-api.figueus.com/api/oauth/token</string>
 
     <string name="chat_url">http://128.199.63.13:3000</string>
 </resources>

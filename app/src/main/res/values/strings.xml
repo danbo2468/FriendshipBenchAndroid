@@ -36,6 +36,8 @@
     <string name="button_choose_healthworker">Choose this healthworker</string>
     <string name="button_next_healthworker">Next healthworker</string>
     <string name="button_previous_healthworker">Previous healthworker</string>
+    <string name="button_login">Login</string>
+    <string name="button_new_account">Create new account</string>
 
     <string name="label_when">When:</string>
     <string name="label_where">Where:</string>
@@ -52,6 +54,8 @@
     <string name="label_email">Email:</string>
     <string name="label_gender">Gender:</string>
     <string name="label_birthday">Birthday:</string>
+    <string name="label_username">Username:</string>
+    <string name="label_password">Password:</string>
 
     <string name="value_female">Female</string>
     <string name="value_male">Male</string>
@@ -61,4 +65,10 @@
 
     <string name="error_message">Sorry, something went wrong. Please try again later.</string>
     <string name="no_connection_message">No internet connection found.</string>
+    <string name="no_password_username_provided">Please enter your username and password.</string>
+    <string name="invalid_credentials">Invalid username/password combination.</string>
+    <string name="succesfully_logged_in">Welcome!</string>
+
+    <string name="token_file_name">user_token</string>
+
 </resources>

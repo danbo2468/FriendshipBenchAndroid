@@ -14,6 +14,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * The controller that handles every API request.
  */
@@ -58,7 +61,7 @@ public class ApiController {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("API", error.getMessage());
+                        Log.d("API", "Error " + error.networkResponse.statusCode + " occurred");
                         callback.onError(error);
                     }
                 });
@@ -116,7 +119,7 @@ public class ApiController {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("API", error.getMessage());
+                        Log.d("API", "Error " + error.networkResponse.statusCode + " occurred");
                         callback.onError(error);
                     }
                 }){
@@ -127,6 +130,48 @@ public class ApiController {
             @Override
             public String getBodyContentType() {
                 return "application/json";
+            }
+
+        };
+        requestQueue.add(stringRequest);
+    }
+
+
+
+
+    public void getToken(String url, final String username, final String password, final String base64, final VolleyCallback callback) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("API", "Error " + error.networkResponse.statusCode + " occurred");
+                        callback.onError(error);
+                    }
+                }){
+
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                params.put("Authorization", "Basic " + base64);
+                return params;
+            }
+            @Override
+            public String getBodyContentType() {
+                return "application/x-www-form-urlencoded; charset=UTF-8";
+            }
+            @Override
+            protected Map<String, String> getParams() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("username", username);
+                params.put("password", password);
+                params.put("grant_type", "password");
+                return params;
             }
 
         };
