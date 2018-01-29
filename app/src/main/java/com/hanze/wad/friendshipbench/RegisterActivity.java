@@ -4,6 +4,7 @@
 
 package com.hanze.wad.friendshipbench;
 
+import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -11,29 +12,32 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
-
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.ApiModels.RegisterModel;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
-import com.hanze.wad.friendshipbench.Controllers.FileController;
-import com.hanze.wad.friendshipbench.Controllers.TokenController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
-
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 public class RegisterActivity extends AppCompatActivity {
+
+    private Calendar birthdayCalendar;
+    private DatePickerDialog.OnDateSetListener date;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_register);
-
         findViewById(R.id.registerButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -47,6 +51,27 @@ public class RegisterActivity extends AppCompatActivity {
                 startActivity(new Intent(getBaseContext(), LoginActivity.class));
             }
         });
+
+        findViewById(R.id.birthdayField).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new DatePickerDialog(RegisterActivity.this, date, Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH),Calendar.getInstance().get(Calendar.DAY_OF_MONTH)).show();
+            }
+        });
+
+
+        date = new DatePickerDialog.OnDateSetListener() {
+            @Override
+            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
+                birthdayCalendar = Calendar.getInstance();
+                birthdayCalendar.set(Calendar.YEAR, year);
+                birthdayCalendar.set(Calendar.MONTH, monthOfYear);
+                birthdayCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
+                String myFormat = "dd-MM-yyyy";
+                SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
+                ((EditText)findViewById(R.id.birthdayField)).setText(dateFormat.format(birthdayCalendar.getTime()));
+            }
+        };
     }
 
     @Override
@@ -65,12 +90,19 @@ public class RegisterActivity extends AppCompatActivity {
         String district = ((EditText)findViewById(R.id.districtField)).getText().toString();
         String streetname = ((EditText)findViewById(R.id.streetnameField)).getText().toString();
         String number = ((EditText)findViewById(R.id.housenumberField)).getText().toString();
+        String birthday = "";
+        if(birthdayCalendar != null){
+            String myFormat = "yyyy-MM-dd";
+            SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
+            birthday = dateFormat.format(birthdayCalendar.getTime());
+        }
+
         String gender;
         if(((RadioButton) findViewById(R.id.genderMale)).isChecked())
             gender = "Male";
         else
             gender = "Female";
-        if(email.equals("") || username.equals("") || password.equals("") || passwordConfirmation.equals("") || firstname.equals("") || lastname.equals("") || province.equals("") || district.equals("") || streetname.equals("") || number.equals("")){
+        if(email.equals("") || username.equals("") || password.equals("") || passwordConfirmation.equals("") || firstname.equals("") || lastname.equals("") || province.equals("") || district.equals("") || streetname.equals("") || number.equals("") || birthday.equals("")){
             Toast.makeText(getBaseContext(), getResources().getString(R.string.fill_in_all_fields), Toast.LENGTH_LONG).show();
             return;
         }
@@ -78,7 +110,7 @@ public class RegisterActivity extends AppCompatActivity {
             Toast.makeText(getBaseContext(), getResources().getString(R.string.different_passwords), Toast.LENGTH_LONG).show();
             return;
         }
-        RegisterModel registerModel = new RegisterModel(email, username, password, firstname, lastname, province, district, streetname, number, gender);
+        RegisterModel registerModel = new RegisterModel(email, username, password, firstname, lastname, province, district, streetname, number, gender, birthday);
 
         JSONObject json = null;
         try {
@@ -87,7 +119,6 @@ public class RegisterActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        Log.d("TEST", json.toString());
         ApiController.getInstance(getBaseContext()).register(getString(R.string.register_url), json, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
@@ -100,5 +131,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
 }
 

@@ -17,7 +17,7 @@ public class RegisterModel {
     private String birthDay;
     private String gender;
 
-    public RegisterModel(String email, String username, String password, String firstname, String lastname, String province, String district, String streetname, String number, String gender) {
+    public RegisterModel(String email, String username, String password, String firstname, String lastname, String province, String district, String streetname, String number, String gender, String birthday) {
         this.email = email;
         this.username = username;
         this.password = password;
@@ -28,6 +28,6 @@ public class RegisterModel {
         this.streetName = streetname;
         this.housenumber = number;
         this.gender = gender;
-        this.birthDay = "2018-01-29T13:30:08.864Z";
+        this.birthDay = birthday + "T00:00:00Z";
     }
 }

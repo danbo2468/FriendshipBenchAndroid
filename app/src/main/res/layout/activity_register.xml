@@ -132,6 +132,7 @@
                     android:layout_height="wrap_content"
                     android:ems="10"
                     android:inputType="textPersonName" />
+
             </LinearLayout>
 
             <LinearLayout
@@ -159,6 +160,26 @@
                         android:layout_weight="1"
                         android:text="@string/value_male" />
                 </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/textView3"
+                    style="@style/LabelText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/label_birthday" />
+
+                <EditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/birthdayField"
+                    android:clickable="true"
+                    android:focusable="false"/>
+
 
             </LinearLayout>
 
