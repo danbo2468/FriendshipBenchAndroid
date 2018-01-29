@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="appointments_url">http://10.0.2.2:54618/api/appointments</string>
-    <string name="questionnaires_url">http://10.0.2.2:54618/api/questionnaires</string>
-    <string name="questions_url">http://10.0.2.2:54618/api/questions</string>
-    <string name="answers_url">http://10.0.2.2:54618/api/answers</string>
-    <string name="account_url">http://10.0.2.2:54618/api/account</string>
-    <string name="healthworkers_url">http://10.0.2.2:54618/api/healthworkers</string>
+    <string name="appointments_url">https://hpa-api.figueus.com/api/appointments</string>
+    <string name="questionnaires_url">https://hpa-api.figueus.com/api/questionnaires</string>
+    <string name="questions_url">https://hpa-api.figueus.com/api/questions</string>
+    <string name="account_url">https://hpa-api.figueus.com/api/account</string>
+    <string name="healthworkers_url">https://hpa-api.figueus.com/api/healthworkers</string>
     <string name="authentication_url">https://hpa-api.figueus.com/api/oauth/token</string>
+    <string name="register_url">https://hpa-api.figueus.com/api/clients/register</string>
 
     <string name="chat_url">http://128.199.63.13:3000</string>
 </resources>

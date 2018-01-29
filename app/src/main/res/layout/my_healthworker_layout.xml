@@ -52,20 +52,6 @@
                 style="@style/LinearLabelValueLayout">
 
                 <TextView
-                    android:id="@+id/healthworkerBirthdayLabel"
-                    style="@style/LabelText"
-                    android:text="@string/label_birthday" />
-
-                <TextView
-                    android:id="@+id/healthworkerBirthdayValue"
-                    style="@style/ValueText" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/LinearLabelValueLayout">
-
-                <TextView
                     android:id="@+id/healthworkerEmailLabel"
                     style="@style/LabelText"
                     android:text="@string/label_email" />

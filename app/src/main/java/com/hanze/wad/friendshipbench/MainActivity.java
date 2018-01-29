@@ -1,9 +1,7 @@
 package com.hanze.wad.friendshipbench;
 
-import android.app.Fragment;
 import android.app.FragmentManager;
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,19 +9,41 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.MenuItem;
+import android.widget.Toast;
 
+import com.android.volley.VolleyError;
 import com.google.gson.Gson;
-import com.hanze.wad.friendshipbench.Models.User;
+import com.hanze.wad.friendshipbench.Controllers.ApiController;
+import com.hanze.wad.friendshipbench.Controllers.ClientController;
+import com.hanze.wad.friendshipbench.Controllers.FileController;
+import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
+import com.hanze.wad.friendshipbench.Models.Client;
+import com.hanze.wad.friendshipbench.Models.Token;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.File;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
 
-    public User user;
+    public Client user;
+    public Token token;
     public CustomFragment currentFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(!FileController.fileExists(getString(R.string.token_file_name), this)) {
+            startActivity(new Intent(getBaseContext(), LoginActivity.class));
+            return;
+        }
+
+        token = new Gson().fromJson(FileController.readFile(getString(R.string.token_file_name), this), Token.class);
+        fetchUser();
+
         setContentView(R.layout.activity_main);
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -32,13 +52,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         drawer.addDrawerListener(toggle);
         toggle.syncState();
-
-        user = new User("4216d9b5-43ae-47e8-b63a-ec200e8fc2a6", "daniel.boonstra@outlook.com", "Daniel", "Boonstra", "06f5e5b1-9ce4-4eb7-8632-3ab59380e7d");
-        Gson gson = new Gson();
-        String userJson = gson.toJson(user);
-        SharedPreferences.Editor editor = getPreferences(Context.MODE_PRIVATE).edit();
-        editor.putString("user", userJson);
-        editor.apply();
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
@@ -53,10 +66,28 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            if(!currentFragment.goBack()) {
-                super.onBackPressed();
-            }
+            currentFragment.goBack();
         }
+    }
+
+    private void fetchUser(){
+
+        // Make an API GET request.
+        ApiController.getInstance(getBaseContext()).getRequest(getResources().getString(R.string.account_url) + "/me", token.getAccessToken(), new VolleyCallback(){
+            @Override
+            public void onSuccess(String result){
+                try {
+                    Log.d("TEST", result);
+                    user = ClientController.jsonToModel(new JSONObject(result));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            public void onError(VolleyError result){
+                Toast.makeText(getBaseContext(), getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
+            }
+        });
     }
 
     @SuppressWarnings("StatementWithEmptyBody")
@@ -75,7 +106,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     .replace(R.id.content_frame, new QuestionnaireOverviewFragment())
                     .commit();
         } else if (id == R.id.nav_healthworker) {
-            if(user.getHealthworkerId() != null) {
+            if(user.hasHealthworker()) {
                 fragmentManager.beginTransaction()
                         .replace(R.id.content_frame, new MyHealthworkerFragment())
                         .commit();
@@ -96,6 +127,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             fragmentManager.beginTransaction()
                     .replace(R.id.content_frame, new AboutFragment())
                     .commit();
+        } else if (id == R.id.nav_logout) {
+            FileController.deleteFile(getString(R.string.token_file_name), this);
+            startActivity(new Intent(getBaseContext(), LoginActivity.class));
         }
 
         DrawerLayout drawer = findViewById(R.id.drawer_layout);

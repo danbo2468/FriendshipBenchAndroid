@@ -7,9 +7,9 @@ package com.hanze.wad.friendshipbench.Models;
 public class Answer {
     private int id;
     private String question;
-    private String answer;
+    private boolean answer;
 
-    public Answer(int id, String question, String answer) {
+    public Answer(int id, String question, boolean answer) {
         this.id = id;
         this.question = question;
         this.answer = answer;
@@ -23,7 +23,7 @@ public class Answer {
         return question;
     }
 
-    public String getAnswer() {
+    public boolean getAnswer() {
         return answer;
     }
 }

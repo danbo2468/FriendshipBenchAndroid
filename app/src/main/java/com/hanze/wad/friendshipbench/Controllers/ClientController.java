@@ -20,8 +20,16 @@ public class ClientController {
      * @return The created client model.
      */
     public static Client jsonToModel(JSONObject json){
+        String healthworkerId = null;
         try {
-            return new Client(json.getString("id"), json.getString("lastName"), json.getString("email"), json.getString("province"), json.getString("gender"), json.getString("houseNumber"), json.getString("streetName"), json.getString("birthDay"), json.getString("district"), json.getString("firstName"));
+            if(json.getString("healthWorker") != null){
+                healthworkerId = json.getJSONObject("healthWorker").getString("id");
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            return new Client(json.getString("id"), json.getString("lastName"), json.getString("email"), json.getString("province"), json.getString("gender"), json.getString("housenumber"), json.getString("streetName"), null, json.getString("district"), json.getString("firstName"), healthworkerId);
         } catch (JSONException e) {
             e.printStackTrace();
         }

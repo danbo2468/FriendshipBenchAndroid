@@ -5,13 +5,11 @@ package com.hanze.wad.friendshipbench.ApiModels;
  */
 
 public class AnswerPost {
-    private String answer;
-    private int question_id;
-    private int questionnaire_id;
+    private boolean answer;
+    private QuestionPost question;
 
-    public AnswerPost(String answer, int question_id, int questionnaire_id) {
+    public AnswerPost(boolean answer, QuestionPost question) {
         this.answer = answer;
-        this.question_id = question_id;
-        this.questionnaire_id = questionnaire_id;
+        this.question = question;
     }
 }

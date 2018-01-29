@@ -2,6 +2,7 @@ package com.hanze.wad.friendshipbench;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,14 +11,14 @@ import android.widget.Toast;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.ApiModels.AnswerPost;
+import com.hanze.wad.friendshipbench.ApiModels.QuestionPost;
 import com.hanze.wad.friendshipbench.ApiModels.QuestionnairePost;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.QuestionController;
-import com.hanze.wad.friendshipbench.Controllers.QuestionnaireController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Answer;
 import com.hanze.wad.friendshipbench.Models.Question;
-import com.hanze.wad.friendshipbench.Models.Questionnaire;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -68,14 +69,14 @@ public class NewQuestionnaireFragment extends CustomFragment {
                 numberOfYesQuestions++;
                 if (questionList.get(currentQuestion).getId() == SUICIDE_QUESTION)
                     suicideQuestionIsYes = true;
-                saveAnswerAndContinue("Yes");
+                saveAnswerAndContinue(true);
             }
         });
 
         // Handle the OnItemClick method for the no button.
         view.findViewById(R.id.buttonNo).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                saveAnswerAndContinue("No");
+                saveAnswerAndContinue(false);
             }
         });
     }
@@ -86,7 +87,7 @@ public class NewQuestionnaireFragment extends CustomFragment {
     private void fetchQuestions() {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questions_url), new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questions_url) + "?only-active=true", activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -138,8 +139,14 @@ public class NewQuestionnaireFragment extends CustomFragment {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         String currentTime = df.format(new Date());
 
+        // Create an AnswerPost model for every answer.
+        ArrayList<AnswerPost> answersPost = new ArrayList<>();
+        for (int i = 0; i < answerList.size(); i++) {
+            answersPost.add(new AnswerPost(answerList.get(i).getAnswer(), new QuestionPost(answerList.get(i).getId())));
+        }
+
         // Create a new questionnaire.
-        QuestionnairePost questionnaire = new QuestionnairePost(activity.user.getId(), currentTime, (numberOfYesQuestions > YES_ANSWERS_FOR_REDFLAG || suicideQuestionIsYes));
+        QuestionnairePost questionnaire = new QuestionnairePost(currentTime, (numberOfYesQuestions > YES_ANSWERS_FOR_REDFLAG || suicideQuestionIsYes), answersPost);
         JSONObject json = null;
         try {
             json = new JSONObject(new Gson().toJson(questionnaire));
@@ -148,52 +155,15 @@ public class NewQuestionnaireFragment extends CustomFragment {
         }
 
         // Make an API POST request.
-        ApiController.getInstance(context).postRequest(getResources().getString(R.string.questionnaires_url), json, new VolleyCallback(){
+        ApiController.getInstance(context).postRequest(getResources().getString(R.string.questionnaires_url), json, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
-                JSONObject response = null;
                 try {
-                    response = new JSONObject(result);
+                    JSONObject jsonResponse = new JSONObject(result);
+                    questionnaireId = jsonResponse.getInt("id");
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                submitAnswers(QuestionnaireController.jsonToSummarizedModel(response));
-            }
-            @Override
-            public void onError(VolleyError result){
-                Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
-            }
-        });
-    }
-
-    /**
-     * Make an API POST request to submit all the answers.
-     * @param questionnaire The questionnaire where the answers belong to.
-     */
-    private void submitAnswers(Questionnaire questionnaire) {
-
-        // Save the questionnaire ID.
-        this.questionnaireId = questionnaire.getId();
-
-        // Create an AnswerPost model for every answer.
-        ArrayList<AnswerPost> answersPost = new ArrayList<>();
-        for (int i = 0; i < answerList.size(); i++) {
-            answersPost.add(new AnswerPost(answerList.get(i).getAnswer(), answerList.get(i).getId(), questionnaireId));
-        }
-
-        // Create JSON from the list.
-        JSONArray json = null;
-        try {
-            json = new JSONArray(new Gson().toJson(answersPost));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-
-        // Make an API POST request.
-        ApiController.getInstance(context).postRequest(getResources().getString(R.string.answers_url), json, new VolleyCallback(){
-            @Override
-            public void onSuccess(String result){
                 Toast.makeText(context, "You've completed the SSQ14 questionnaire.", Toast.LENGTH_LONG).show();
                 QuestionnaireDetailsFragment fragment = new QuestionnaireDetailsFragment();
                 bundle.putInt("questionnaire_id", questionnaireId);
@@ -207,11 +177,12 @@ public class NewQuestionnaireFragment extends CustomFragment {
         });
     }
 
+
     /**
      * Save an answer to the list and continue to the next question.
      * @param answer The given answer. 'Yes' or 'No'.
      */
-    private void saveAnswerAndContinue(String answer){
+    private void saveAnswerAndContinue(Boolean answer){
         Question question = questionList.get(currentQuestion);
         answerList.add(new Answer(question.getId(), question.getQuestion(), answer));
         nextQuestion();

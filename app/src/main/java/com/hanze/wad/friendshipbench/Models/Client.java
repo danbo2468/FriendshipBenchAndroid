@@ -16,8 +16,9 @@ public class Client {
     private String birthday;
     private String district;
     private String firstname;
+    private String healthWorkerId;
 
-    public Client(String id, String lastname, String email, String province, String gender, String housenumber, String streetname, String birthday, String district, String firstname) {
+    public Client(String id, String lastname, String email, String province, String gender, String housenumber, String streetname, String birthday, String district, String firstname, String healthWorkerId) {
         this.id = id;
         this.lastname = lastname;
         this.email = email;
@@ -28,6 +29,7 @@ public class Client {
         this.birthday = birthday;
         this.district = district;
         this.firstname = firstname;
+        this.healthWorkerId = healthWorkerId;
     }
 
     public String getId() {
@@ -74,14 +76,22 @@ public class Client {
         return firstname + " " + lastname;
     }
 
+    public String getHealthWorkerId() {
+        return healthWorkerId;
+    }
+
+    public void setHealthWorkerId(String healthWorkerId){
+        this.healthWorkerId = healthWorkerId;
+    }
+
     public String getAddress() {
         return streetname + " " + housenumber + ", " + district + ", " + province;
     }
 
     public String getGenderString(){
-        if(gender.equals("male"))
+        if(gender.equals("Male"))
             return "Male";
-        else if(gender.equals("female"))
+        else if(gender.equals("Female"))
             return "Female";
         else
             return "Unknown";
@@ -98,5 +108,13 @@ public class Client {
             e.printStackTrace();
         }
         return null;
+    }
+
+    public String getChatKey(){
+        return id + "" + healthWorkerId;
+    }
+
+    public boolean hasHealthworker(){
+        return healthWorkerId != null;
     }
 }

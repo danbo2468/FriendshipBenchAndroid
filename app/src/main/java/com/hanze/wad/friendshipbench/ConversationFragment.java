@@ -19,8 +19,11 @@ import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
 import com.google.gson.Gson;
-import com.hanze.wad.friendshipbench.Models.User;
+import com.hanze.wad.friendshipbench.Models.Client;
+
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Fragment controller for the chat page.
@@ -54,9 +57,11 @@ public class ConversationFragment extends CustomFragment {
         // Handle the button for sending a new message.
         view.findViewById(R.id.buttonSendMessage).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                User user = ((MainActivity)getActivity()).user;
-                socket.emit("new message", user.getId(), user.getFullname(), ((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), "13:02", user.getChatKey());
-                showMyMessage(((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), "13:02");
+                Client user = ((MainActivity)getActivity()).user;
+                SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+                String currentTime = df.format(new Date());
+                socket.emit("new message", user.getId(), user.getFullname(), ((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), currentTime, user.getChatKey());
+                showMyMessage(((EditText)view.findViewById(R.id.messageTextField)).getText().toString(), currentTime);
                 ((EditText)view.findViewById(R.id.messageTextField)).setText("");
             }
         });
@@ -78,9 +83,7 @@ public class ConversationFragment extends CustomFragment {
         socket.connect();
 
         // Enter a room and set the handlers.
-        SharedPreferences sharedPref = activity.getPreferences(context.MODE_PRIVATE);
-        Gson gson = new Gson();
-        User user = gson.fromJson(sharedPref.getString("user", ""), User.class);
+        Client user = ((MainActivity)getActivity()).user;
         socket.emit("join room", user.getChatKey());
         socket.on("new message", handleNewMessage);
     }

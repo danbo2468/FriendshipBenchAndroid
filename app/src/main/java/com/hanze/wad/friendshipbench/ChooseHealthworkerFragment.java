@@ -97,7 +97,7 @@ public class ChooseHealthworkerFragment extends CustomFragment {
     private void fetchHealthworkers() {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.healthworkers_url), new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.healthworkers_url), activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -157,19 +157,11 @@ public class ChooseHealthworkerFragment extends CustomFragment {
      */
     private void chooseHealthworker(){
 
-        // Create a new add healthworker model.
-        AddHealthworkerPut addHealthworkerPut = new AddHealthworkerPut(healthworkerList.get(currentHealthworker).getId());
-        JSONObject json = null;
-        try {
-            json = new JSONObject(new Gson().toJson(addHealthworkerPut));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
         // Make an API POST request.
-        ApiController.getInstance(context).putRequest(getResources().getString(R.string.account_url) + "/addHealthworker/daniel.boonstra@outlook.com", json, new VolleyCallback(){
+        ApiController.getInstance(context).putRequestWithoutBody(getResources().getString(R.string.account_url) + "/setmyhealthworker/" + healthworkerList.get(currentHealthworker).getId(), activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
+                activity.user.setHealthWorkerId(healthworkerList.get(currentHealthworker).getId());
                 Toast.makeText(context, "You have chosen " + healthworkerList.get(currentHealthworker).getFullName() + " as your healthworker.", Toast.LENGTH_LONG).show();
                 getFragmentManager().beginTransaction().replace(R.id.content_frame, new MyHealthworkerFragment()).commit();
             }
@@ -189,7 +181,6 @@ public class ChooseHealthworkerFragment extends CustomFragment {
         // Update all the text items.
         ((TextView) activity.findViewById(R.id.healthworkerNameValue)).setText(healthworker.getFullName());
         ((TextView) activity.findViewById(R.id.healthworkerGenderValue)).setText(healthworker.getGenderString());
-        ((TextView) activity.findViewById(R.id.healthworkerBirthdayValue)).setText(healthworker.getReadableBirthday());
         ((TextView) activity.findViewById(R.id.healthworkerEmailValue)).setText(healthworker.getEmail());
     }
 }

@@ -11,12 +11,12 @@ public class Appointment {
 
     private int id;
     private String time;
-    private Status status;
+    private String status;
     private Bench bench;
     private Client client;
     private Healthworker healthworker;
 
-    public Appointment(int id, String time, Status status, Bench bench, Client client, Healthworker healthworker) {
+    public Appointment(int id, String time, String status, Bench bench, Client client, Healthworker healthworker) {
         this.id = id;
         this.time = time;
         this.status = status;
@@ -46,7 +46,7 @@ public class Appointment {
         return null;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -67,10 +67,18 @@ public class Appointment {
     }
 
     public int getStatusIcon(){
-        if(status.getId() == 1)
+        if(status.equals("PENDING"))
             return R.drawable.ic_waiting_approval;
-        if(status.getId() == 2)
+        if(status.equals("ACCEPTED"))
             return R.drawable.ic_accepted;
         return R.drawable.ic_close;
+    }
+
+    public String getReadableStatus(){
+        if(status.equals("PENDING"))
+            return "Pending";
+        if(status.equals("ACCEPTED"))
+            return "Accepted";
+        return "Cancelled";
     }
 }

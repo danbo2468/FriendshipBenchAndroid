@@ -7,10 +7,12 @@ package com.hanze.wad.friendshipbench.Models;
 public class Question {
     private int id;
     private String question;
+    private boolean active;
 
-    public Question(int id, String question) {
+    public Question(int id, String question, boolean active) {
         this.id = id;
         this.question = question;
+        this.active = active;
     }
 
     public int getId() {
@@ -19,5 +21,9 @@ public class Question {
 
     public String getQuestion() {
         return question;
+    }
+
+    public boolean isActive() {
+        return active;
     }
 }

@@ -56,7 +56,7 @@ public class QuestionnaireDetailsFragment extends CustomFragment {
     private void fetchQuestionnaire(int id) {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questionnaires_url) + "/" + id, new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questionnaires_url) + "/" + id, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -112,7 +112,7 @@ public class QuestionnaireDetailsFragment extends CustomFragment {
             // Create a new value text field.
             ContextThemeWrapper valueContext = new ContextThemeWrapper(activity.getBaseContext(), R.style.ValueText);
             TextView value = new TextView(valueContext);
-            value.setText(answer.getAnswer());
+            value.setText(answer.getAnswer() ? "Yes" : "No");
 
             // Add both text fields to the linearLabelValueLayout.
             linearLayout.addView(linearLabelValueLayout);

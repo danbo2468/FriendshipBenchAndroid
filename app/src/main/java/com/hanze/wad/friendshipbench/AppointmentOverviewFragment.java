@@ -6,6 +6,7 @@ package com.hanze.wad.friendshipbench;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -77,7 +78,7 @@ public class AppointmentOverviewFragment extends CustomFragment {
         appointmentsList.clear();
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.appointments_url) + "?clientId=" + activity.user.getId(), new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.appointments_url), activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {

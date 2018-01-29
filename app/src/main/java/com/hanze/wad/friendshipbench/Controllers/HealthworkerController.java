@@ -20,7 +20,7 @@ public class HealthworkerController {
      */
     public static Healthworker jsonToModel(JSONObject json){
         try {
-            return new Healthworker(json.getString("id"), json.getString("birthday"), json.getString("phoneNumber"), json.getString("email"), json.getString("gender"), json.getString("lastname"), json.getString("firstname"));
+            return new Healthworker(json.getString("id"), null, json.getString("phonenumber"), json.getString("email"), json.getString("gender"), json.getString("lastName"), json.getString("firstName"));
         } catch (JSONException e) {
             e.printStackTrace();
         }

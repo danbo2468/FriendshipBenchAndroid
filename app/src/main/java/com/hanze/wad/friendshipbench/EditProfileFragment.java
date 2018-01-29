@@ -21,7 +21,7 @@ import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.ClientController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Client;
-import com.hanze.wad.friendshipbench.Models.User;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -51,9 +51,8 @@ public class EditProfileFragment extends CustomFragment {
      */
     protected void initializeFragment(){
 
-        // Get the current client email.
-        User user = activity.user;
-        fetchProfile(user.getEmail());
+        // Get the current client details.
+        fetchProfile();
 
         // Handle the OnItemClick method for update button. It will do an API PUT request.
         view.findViewById(R.id.updateProfileButton).setOnClickListener(new View.OnClickListener() {
@@ -69,10 +68,10 @@ public class EditProfileFragment extends CustomFragment {
      * Make a GET request to the API to get the requested user.
      * @param email The users email.
      */
-    private void fetchProfile(String email) {
+    private void fetchProfile() {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.account_url) + "/currentUser/" + email, new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.account_url) + "/me", activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -111,8 +110,8 @@ public class EditProfileFragment extends CustomFragment {
         ((TextView) activity.findViewById(R.id.editProvinceField)).setText(client.getProvince());
 
         // Update the gender radio buttons.
-        ((RadioButton) activity.findViewById(R.id.editGenderMale)).setChecked(client.getGender().equals("male"));
-        ((RadioButton) activity.findViewById(R.id.editGenderFemale)).setChecked(client.getGender().equals("female"));
+        ((RadioButton) activity.findViewById(R.id.editGenderMale)).setChecked(client.getGender().equals("Male"));
+        ((RadioButton) activity.findViewById(R.id.editGenderFemale)).setChecked(client.getGender().equals("Female"));
 
     }
 
@@ -120,7 +119,16 @@ public class EditProfileFragment extends CustomFragment {
      * Update the client's profile.
      */
     private void updateProfile(){
-        ClientPut clientPut = new ClientPut(((EditText)activity.findViewById(R.id.editStreetnameField)).getText().toString(), ((EditText)activity.findViewById(R.id.editHousenumberField)).getText().toString(), ((EditText)activity.findViewById(R.id.editProvinceField)).getText().toString(), ((EditText)activity.findViewById(R.id.editDistrictField)).getText().toString());
+
+        // Get the gender.
+        String gender;
+        if(((RadioButton) activity.findViewById(R.id.editGenderMale)).isChecked())
+            gender = "Male";
+        else
+            gender = "Female";
+
+        // Update the client details.
+        ClientPut clientPut = new ClientPut(((EditText)activity.findViewById(R.id.editFirstnameField)).getText().toString(), ((EditText)activity.findViewById(R.id.editLastnameField)).getText().toString(), gender, ((EditText)activity.findViewById(R.id.editStreetnameField)).getText().toString(), ((EditText)activity.findViewById(R.id.editHousenumberField)).getText().toString(), ((EditText)activity.findViewById(R.id.editProvinceField)).getText().toString(), ((EditText)activity.findViewById(R.id.editDistrictField)).getText().toString());
         JSONObject json = null;
         try {
             json = new JSONObject(new Gson().toJson(clientPut));
@@ -129,7 +137,7 @@ public class EditProfileFragment extends CustomFragment {
         }
 
         // Make an API PUT request.
-        ApiController.getInstance(context).putRequest(getResources().getString(R.string.account_url) + "/edit/" + client.getEmail(), json, new VolleyCallback(){
+        ApiController.getInstance(context).putRequest(getResources().getString(R.string.account_url) + "/me", json, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 Toast.makeText(context, "Your profile details have been updated.", Toast.LENGTH_LONG).show();

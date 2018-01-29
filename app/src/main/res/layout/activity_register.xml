@@ -1,0 +1,249 @@
+<!--
+  ~ Copyright (c) 2018. Developed by the Hanzehogeschool Groningen for Friendship Bench Zimbabwe.
+  -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.hanze.wad.friendshipbench.LoginActivity">
+
+
+    <ScrollView
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="vertical"
+            android:layout_height="wrap_content">
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/emailLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_email" />
+
+                <EditText
+                    android:id="@+id/emailField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textEmailAddress" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/usernameLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_username" />
+
+                <EditText
+                    android:id="@+id/usernameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+
+            </LinearLayout>
+            <LinearLayout
+                style="@style/LinearLabelValueLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/passwordLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_password" />
+
+                <EditText
+                    android:id="@+id/passwordField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPassword"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/passwordConfirmLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_password_confirmation" />
+
+                <EditText
+                    android:id="@+id/passwordConfirmField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPassword"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/firstnameLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_firstname" />
+
+                <EditText
+                    android:id="@+id/firstnameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/lastnameLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_lastname" />
+
+                <EditText
+                    android:id="@+id/lastnameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/genderLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_gender" />
+
+                <RadioGroup
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" >
+
+                    <RadioButton
+                        android:id="@+id/genderFemale"
+                        style="@style/ValueText"
+                        android:layout_weight="1"
+                        android:checked="true"
+                        android:text="@string/value_female" />
+
+                    <RadioButton
+                        android:id="@+id/genderMale"
+                        style="@style/ValueText"
+                        android:layout_weight="1"
+                        android:text="@string/value_male" />
+                </RadioGroup>
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/streetnameLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_streetname" />
+
+                <EditText
+                    android:id="@+id/streetnameField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/numberLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_number" />
+
+                <EditText
+                    android:id="@+id/housenumberField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName"/>
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/districtLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_district" />
+
+                <EditText
+                    android:id="@+id/districtField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/provinceLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_province" />
+
+                <EditText
+                    android:id="@+id/provinceField"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:ems="10"
+                    android:inputType="textPersonName" />
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/registerButton"
+                style="@style/Widget.AppCompat.Button.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/button_register" />
+
+            <Button
+                android:id="@+id/loginButton"
+                style="@style/Widget.AppCompat.Button"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/button_use_existing_account" />
+        </LinearLayout>
+
+
+
+
+    </ScrollView>
+
+</LinearLayout>

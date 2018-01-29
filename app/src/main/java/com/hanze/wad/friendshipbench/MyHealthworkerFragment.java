@@ -44,7 +44,7 @@ public class MyHealthworkerFragment extends CustomFragment {
      * The initialization of the specific fragment.
      */
     protected void initializeFragment(){
-        fetchHealthworker(activity.user.getHealthworkerId());
+        fetchHealthworker(activity.user.getHealthWorkerId());
     }
 
     /**
@@ -54,7 +54,7 @@ public class MyHealthworkerFragment extends CustomFragment {
     private void fetchHealthworker(String id) {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.healthworkers_url) + "/" + id, new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.healthworkers_url) + "/" + id, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -87,7 +87,6 @@ public class MyHealthworkerFragment extends CustomFragment {
         // Update all the text items.
         ((TextView) activity.findViewById(R.id.healthworkerNameValue)).setText(healthworker.getFullName());
         ((TextView) activity.findViewById(R.id.healthworkerGenderValue)).setText(healthworker.getGenderString());
-        ((TextView) activity.findViewById(R.id.healthworkerBirthdayValue)).setText(healthworker.getReadableBirthday());
         ((TextView) activity.findViewById(R.id.healthworkerEmailValue)).setText(healthworker.getEmail());
     }
 }

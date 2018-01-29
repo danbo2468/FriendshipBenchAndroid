@@ -4,13 +4,8 @@
 
 package com.hanze.wad.friendshipbench;
 
-import android.app.Fragment;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,13 +13,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.ClientController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
-import com.hanze.wad.friendshipbench.Models.Appointment;
 import com.hanze.wad.friendshipbench.Models.Client;
-import com.hanze.wad.friendshipbench.Models.User;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,9 +47,8 @@ public class ProfileFragment extends CustomFragment {
      */
     protected void initializeFragment(){
 
-        // Get the user
-        User user = activity.user;
-        fetchProfile(user.getEmail());
+        // Get the user information
+        fetchProfile();
 
         // Handle the OnItemClick method for the Floating Action Button
         view.findViewById(R.id.profileFab).setOnClickListener(new View.OnClickListener() {
@@ -71,10 +62,10 @@ public class ProfileFragment extends CustomFragment {
      * Make a GET request to the API to get the requested user.
      * @param email The users email.
      */
-    private void fetchProfile(String email) {
+    private void fetchProfile() {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.account_url) + "/currentUser/" + email, new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.account_url) + "/me", activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -107,7 +98,6 @@ public class ProfileFragment extends CustomFragment {
         // Update all the text items.
         ((TextView) activity.findViewById(R.id.profileNameValue)).setText(client.getFullname());
         ((TextView) activity.findViewById(R.id.profileGenderValue)).setText(client.getGenderString());
-        ((TextView) activity.findViewById(R.id.profileBirthdayValue)).setText(client.getReadableBirthday());
         ((TextView) activity.findViewById(R.id.profileAddressValue)).setText(client.getAddress());
         ((TextView) activity.findViewById(R.id.profileEmailValue)).setText(client.getEmail());
     }

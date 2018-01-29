@@ -50,7 +50,7 @@ public class ApiController {
      * @param url The endpoint for the request.
      * @param callback The callback that will be called afterwards.
      */
-    public void getRequest(String url, final VolleyCallback callback) {
+    public void getRequest(String url, final String token, final VolleyCallback callback) {
         StringRequest stringRequest = new StringRequest(Request.Method.GET, url,
                 new Response.Listener<String>() {
                     @Override
@@ -64,7 +64,14 @@ public class ApiController {
                         Log.d("API", "Error " + error.networkResponse.statusCode + " occurred");
                         callback.onError(error);
                     }
-                });
+                }){
+                @Override
+                public Map<String, String> getHeaders() throws AuthFailureError {
+                    Map<String, String> params = new HashMap<String, String>();
+                    params.put("Authorization", "Bearer " + token);
+                    return params;
+                }
+        };
         requestQueue.add(stringRequest);
     }
 
@@ -74,7 +81,7 @@ public class ApiController {
      * @param object The object that will be send to the API.
      * @param callback The callback that will be called afterwards.
      */
-    public void putRequest(String url, final Object object, final VolleyCallback callback) {
+    public void putRequest(String url, final Object object, final String token, final VolleyCallback callback) {
         StringRequest stringRequest = new StringRequest(Request.Method.PUT, url,
                 new Response.Listener<String>() {
                     @Override
@@ -89,6 +96,87 @@ public class ApiController {
                         callback.onError(error);
                     }
                 }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + token);
+                return params;
+            }
+            @Override
+            public byte[] getBody() throws AuthFailureError {
+                return object.toString().getBytes();
+            }
+            @Override
+            public String getBodyContentType() {
+                return "application/json";
+            }
+
+        };
+        requestQueue.add(stringRequest);
+    }
+
+    /**
+     * Make an API PUT request with empty body.
+     * @param url The endpoint for the request.
+     * @param object The object that will be send to the API.
+     * @param callback The callback that will be called afterwards.
+     */
+    public void putRequestWithoutBody(String url, final String token, final VolleyCallback callback) {
+        StringRequest stringRequest = new StringRequest(Request.Method.PUT, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        Log.d("API", error.getMessage());
+                        callback.onError(error);
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + token);
+                return params;
+            }
+
+        };
+        requestQueue.add(stringRequest);
+    }
+
+    /**
+     * Make an API POST request.
+     * @param url The endpoint for the request.
+     * @param object The object that will be send to the API.
+     * @param callback The callback that will be called afterwards.
+     */
+    public void postRequest(String url, final Object object, final String token, final VolleyCallback callback) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
+                new Response.Listener<String>() {
+                    @Override
+                    public void onResponse(String response) {
+                        callback.onSuccess(response);
+                    }
+                },
+                new Response.ErrorListener() {
+                    @Override
+                    public void onErrorResponse(VolleyError error) {
+                        if(error.networkResponse == null)
+                            Log.d("API", "Unknown error occurred");
+                        else
+                            Log.d("API", "Error " + error.networkResponse.statusCode + " occurred");
+                        callback.onError(error);
+                    }
+                }){
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("Authorization", "Bearer " + token);
+                return params;
+            }
             @Override
             public byte[] getBody() throws AuthFailureError {
                 return object.toString().getBytes();
@@ -108,7 +196,7 @@ public class ApiController {
      * @param object The object that will be send to the API.
      * @param callback The callback that will be called afterwards.
      */
-    public void postRequest(String url, final Object object, final VolleyCallback callback) {
+    public void register(String url, final Object object, final VolleyCallback callback) {
         StringRequest stringRequest = new StringRequest(Request.Method.POST, url,
                 new Response.Listener<String>() {
                     @Override
@@ -119,7 +207,10 @@ public class ApiController {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("API", "Error " + error.networkResponse.statusCode + " occurred");
+                        if(error.networkResponse == null)
+                            Log.d("API", "Unknown error occurred");
+                        else
+                            Log.d("API", "Error " + error.networkResponse.statusCode + " occurred");
                         callback.onError(error);
                     }
                 }){
@@ -150,7 +241,10 @@ public class ApiController {
                 new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
-                        Log.d("API", "Error " + error.networkResponse.statusCode + " occurred");
+                        if(error.networkResponse == null)
+                            Log.d("API", "Unknown error occurred");
+                        else
+                            Log.d("API", "Error " + error.networkResponse.statusCode + " occurred");
                         callback.onError(error);
                     }
                 }){

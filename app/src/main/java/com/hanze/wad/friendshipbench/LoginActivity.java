@@ -4,9 +4,12 @@
 
 package com.hanze.wad.friendshipbench;
 import android.content.Intent;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -28,6 +31,11 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if(FileController.fileExists(getString(R.string.token_file_name), this)) {
+            startActivity(new Intent(getBaseContext(), MainActivity.class));
+            return;
+        }
+
         setContentView(R.layout.activity_login);
 
         findViewById(R.id.loginButton).setOnClickListener(new View.OnClickListener() {
@@ -37,7 +45,16 @@ public class LoginActivity extends AppCompatActivity {
                 attemptLogin();
             }
         });
+
+        findViewById(R.id.registerButton).setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                startActivity(new Intent(getBaseContext(), RegisterActivity.class));
+            }
+        });
     }
+
+    @Override
+    public void onBackPressed() {}
 
     private void attemptLogin(){
         String username = ((EditText)findViewById(R.id.usernameField)).getText().toString();

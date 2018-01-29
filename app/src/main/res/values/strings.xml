@@ -12,6 +12,7 @@
     <string name="menu_profile">Profile</string>
     <string name="menu_questionnaires">Questionnaires</string>
     <string name="menu_about">About</string>
+    <string name="menu_logout">Logout</string>
 
     <string name="header_appointments">My appointments</string>
     <string name="header_healthworker">My healthworker</string>
@@ -38,6 +39,8 @@
     <string name="button_previous_healthworker">Previous healthworker</string>
     <string name="button_login">Login</string>
     <string name="button_new_account">Create new account</string>
+    <string name="button_register">Register</string>
+    <string name="button_use_existing_account">Login with an existing account</string>
 
     <string name="label_when">When:</string>
     <string name="label_where">Where:</string>
@@ -56,6 +59,7 @@
     <string name="label_birthday">Birthday:</string>
     <string name="label_username">Username:</string>
     <string name="label_password">Password:</string>
+    <string name="label_password_confirmation">Password confirmation:</string>
 
     <string name="value_female">Female</string>
     <string name="value_male">Male</string>
@@ -67,7 +71,10 @@
     <string name="no_connection_message">No internet connection found.</string>
     <string name="no_password_username_provided">Please enter your username and password.</string>
     <string name="invalid_credentials">Invalid username/password combination.</string>
+    <string name="fill_in_all_fields">Please fill in all the fields.</string>
+    <string name="different_passwords">The entered passwords don\'t match.</string>
     <string name="succesfully_logged_in">Welcome!</string>
+    <string name="succesfully_registered">We\'ve created your account. You can now log in.</string>
 
     <string name="token_file_name">user_token</string>
 

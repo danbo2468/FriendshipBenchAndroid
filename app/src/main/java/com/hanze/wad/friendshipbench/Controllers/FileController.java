@@ -10,6 +10,7 @@ import android.util.Log;
 import com.hanze.wad.friendshipbench.R;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -57,5 +58,9 @@ public class FileController {
         } catch (FileNotFoundException e) {
             return false;
         }
+    }
+
+    public static void deleteFile(String fileName, Activity activity){
+        new File(activity.getFilesDir().getAbsolutePath() + "/" + fileName).delete();
     }
 }

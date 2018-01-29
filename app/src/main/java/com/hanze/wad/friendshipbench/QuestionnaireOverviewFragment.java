@@ -85,8 +85,7 @@ public class QuestionnaireOverviewFragment extends CustomFragment {
         questionnairesList.clear();
 
         // Make an API GET request.
-        Log.d("TEST", getResources().getString(R.string.questionnaires_url) + "?clientId=" + activity.user.getId());
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questionnaires_url) + "?clientId=" + ((MainActivity)getActivity()).user.getId(), new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questionnaires_url), activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {

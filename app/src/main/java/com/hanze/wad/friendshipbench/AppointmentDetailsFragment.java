@@ -41,6 +41,7 @@ import java.util.List;
 public class AppointmentDetailsFragment extends CustomFragment implements OnMapReadyCallback {
 
     private Appointment appointment;
+    private MapView mapView;
 
     /**
      * The OnCreateView method which will be called first.
@@ -53,7 +54,7 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, Bundle savedInstanceState) {
         initializeSuper(R.layout.appointment_details_layout, true, new AppointmentOverviewFragment(), inflater, container);
-        MapView mapView = view.findViewById(R.id.mapView);
+        mapView = view.findViewById(R.id.mapView);
         mapView.onCreate(savedInstanceState);
         mapView.getMapAsync(this);
         return view;
@@ -89,7 +90,7 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
     private void fetchAppointment(int id) {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.appointments_url) + "/" + id, new VolleyCallback(){
+        ApiController.getInstance(context).getRequest(getResources().getString(R.string.appointments_url) + "/" + id, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -124,13 +125,13 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
         ((TextView) activity.findViewById(R.id.appointmentWhenValue)).setText(appointment.getReadableTime());
         ((TextView) activity.findViewById(R.id.appointmentWhoValue)).setText("You and " + appointment.getHealthworker().getFullName());
         ((TextView) activity.findViewById(R.id.appointmentWhereValue)).setText(appointment.getBench().getFullLocation());
-        ((TextView) activity.findViewById(R.id.appointmentStatusValue)).setText(appointment.getStatus().getName());
+        ((TextView) activity.findViewById(R.id.appointmentStatusValue)).setText(appointment.getReadableStatus());
 
         // Show or hide the right buttons according to the current appointment status.
-        if(appointment.getStatus().getId() == 1){
+        if(appointment.getStatus().equals("PENDING")){
             (activity.findViewById(R.id.acceptButton)).setVisibility(View.VISIBLE);
             (activity.findViewById(R.id.cancelButton)).setVisibility(View.VISIBLE);
-        } else if(appointment.getStatus().getId() == 2){
+        } else if(appointment.getStatus().equals("ACCEPTED")){
             (activity.findViewById(R.id.acceptButton)).setVisibility(View.GONE);
             (activity.findViewById(R.id.cancelButton)).setVisibility(View.VISIBLE);
         } else {
@@ -145,21 +146,15 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
      */
     private void updateStatus(boolean accepted) {
 
-        // Create a new appointment model in order to do a PUT request.
-        final AppointmentPut appointmentPut;
+        String url;
         if(accepted)
-            appointmentPut = new AppointmentPut(appointment.getId(), appointment.getTime(), 2, appointment.getBench().getId(), appointment.getClient().getId(), appointment.getHealthworker().getId());
+            url = getString(R.string.appointments_url) + "/" + appointment.getId() + "/accept";
         else
-            appointmentPut = new AppointmentPut(appointment.getId(), appointment.getTime(), 3, appointment.getBench().getId(), appointment.getClient().getId(), appointment.getHealthworker().getId());
-        JSONObject json = null;
-        try {
-            json = new JSONObject(new Gson().toJson(appointmentPut));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+            url = getString(R.string.appointments_url) + "/" + appointment.getId() + "/cancel";
+
 
         // Make an API PUT request.
-        ApiController.getInstance(context).putRequest(getResources().getString(R.string.appointments_url) + "/" + appointment.getId(), json, new VolleyCallback(){
+        ApiController.getInstance(context).putRequestWithoutBody(url, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 Toast.makeText(context, "The status for this appointment has been updated.", Toast.LENGTH_LONG).show();
@@ -173,10 +168,64 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
         });
     }
 
+    /**
+     * Initialize the map.
+     * @param googleMap The map.
+     */
     public void onMapReady(GoogleMap googleMap) {
-        LatLng marum = new LatLng(35, 6);
-        googleMap.addMarker(new MarkerOptions().position(marum).title("Bench Location"));
-        googleMap.moveCamera(CameraUpdateFactory.newLatLng(marum));
-        googleMap.animateCamera( CameraUpdateFactory.zoomTo( 2.0f ) );
+        LatLng location = getLocationFromAddress(appointment.getBench().getFullLocation());
+        googleMap.addMarker(new MarkerOptions().position(location).title("Bench"));
+        googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10.0f));
+    }
+
+    /**
+     * Get a longLat from the bench address.
+     * @param strAddress The address,
+     * @return The longLat.
+     */
+    public LatLng getLocationFromAddress(String strAddress) {
+        Geocoder coder = new Geocoder(context);
+        List<Address> address;
+        LatLng latlng = null;
+        try {
+            address = coder.getFromLocationName(strAddress, 5);
+            if (address == null) {
+                return null;
+            }
+            Address location = address.get(0);
+            location.getLatitude();
+            location.getLongitude();
+            latlng = new LatLng(location.getLatitude(), location.getLongitude() );
+        } catch (IOException ex) {
+
+            ex.printStackTrace();
+        }
+
+        return latlng;
+    }
+
+
+    @Override
+    public void onResume() {
+        mapView.onResume();
+        super.onResume();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mapView.onPause();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        mapView.onDestroy();
+    }
+
+    @Override
+    public void onLowMemory() {
+        super.onLowMemory();
+        mapView.onLowMemory();
     }
 }
