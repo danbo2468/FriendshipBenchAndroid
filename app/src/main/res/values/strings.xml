@@ -51,10 +51,11 @@
     <string name="label_lastname">Lastname:</string>
     <string name="label_address">Address:</string>
     <string name="label_streetname">Streetname:</string>
-    <string name="label_number">Number:</string>
+    <string name="label_number">Housenumber:</string>
     <string name="label_province">Province:</string>
     <string name="label_district">District:</string>
     <string name="label_email">Email:</string>
+    <string name="label_age">Age:</string>
     <string name="label_gender">Gender:</string>
     <string name="label_birthday">Birthday:</string>
     <string name="label_username">Username:</string>

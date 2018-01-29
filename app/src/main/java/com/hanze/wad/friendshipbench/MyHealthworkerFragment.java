@@ -11,9 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
-import com.hanze.wad.friendshipbench.Controllers.HealthworkerController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Healthworker;
 import org.json.JSONException;
@@ -44,7 +45,7 @@ public class MyHealthworkerFragment extends CustomFragment {
      * The initialization of the specific fragment.
      */
     protected void initializeFragment(){
-        fetchHealthworker(activity.user.getHealthWorkerId());
+        fetchHealthworker(activity.user.getHealthWorker().getId());
     }
 
     /**
@@ -54,11 +55,12 @@ public class MyHealthworkerFragment extends CustomFragment {
     private void fetchHealthworker(String id) {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.healthworkers_url) + "/" + id, activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.healthworkers_url) + "/" + id, Request.Method.GET, null, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
-                    jsonToHealthworker(new JSONObject(result));
+                    healthworker = new Healthworker(new JSONObject(result));
+                    updateView();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -71,22 +73,14 @@ public class MyHealthworkerFragment extends CustomFragment {
     }
 
     /**
-     * Convert a JSON object to a healthworker.
-     * @param json The JSON object with a healthworker in it.
-     */
-    private void jsonToHealthworker(JSONObject json) {
-        this.healthworker = HealthworkerController.jsonToModel(json);
-        updateView();
-    }
-
-    /**
      * Update the view with the right profile information.
      */
     private void updateView(){
 
         // Update all the text items.
-        ((TextView) activity.findViewById(R.id.healthworkerNameValue)).setText(healthworker.getFullName());
-        ((TextView) activity.findViewById(R.id.healthworkerGenderValue)).setText(healthworker.getGenderString());
+        ((TextView) activity.findViewById(R.id.healthworkerNameValue)).setText(healthworker.getFullname());
+        ((TextView) activity.findViewById(R.id.healthworkerGenderValue)).setText(healthworker.getFancyGender());
         ((TextView) activity.findViewById(R.id.healthworkerEmailValue)).setText(healthworker.getEmail());
+        ((TextView) activity.findViewById(R.id.healthworkerAgeValue)).setText(healthworker.getAge() + " years");
     }
 }

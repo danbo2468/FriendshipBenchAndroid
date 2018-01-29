@@ -1,6 +1,5 @@
 package com.hanze.wad.friendshipbench;
 
-import android.app.Fragment;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.ContextThemeWrapper;
@@ -10,9 +9,10 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
-import com.hanze.wad.friendshipbench.Controllers.QuestionnaireController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Answer;
 import com.hanze.wad.friendshipbench.Models.Questionnaire;
@@ -56,11 +56,12 @@ public class QuestionnaireDetailsFragment extends CustomFragment {
     private void fetchQuestionnaire(int id) {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questionnaires_url) + "/" + id, activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.questionnaires_url) + "/" + id, Request.Method.GET, null, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
-                    jsonToQuestionnaire(new JSONObject(result));
+                    questionnaire = new Questionnaire(new JSONObject(result));
+                    updateView();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -70,15 +71,6 @@ public class QuestionnaireDetailsFragment extends CustomFragment {
                 Toast.makeText(context, getResources().getString(R.string.error_message), Toast.LENGTH_LONG).show();
             }
         });
-    }
-
-    /**
-     * Convert a JSON object to a questionnaire.
-     * @param json The JSON object with the question in it.
-     */
-    private void jsonToQuestionnaire(JSONObject json) {
-        this.questionnaire = QuestionnaireController.jsonToDetailedModel(json);
-        updateView();
     }
 
     /**
@@ -107,7 +99,7 @@ public class QuestionnaireDetailsFragment extends CustomFragment {
             // Create a new label text field.
             ContextThemeWrapper labelContext = new ContextThemeWrapper(activity.getBaseContext(), R.style.LabelText);
             TextView label = new TextView(labelContext);
-            label.setText(answer.getQuestion());
+            label.setText(answer.getQuestion().getQuestionText());
 
             // Create a new value text field.
             ContextThemeWrapper valueContext = new ContextThemeWrapper(activity.getBaseContext(), R.style.ValueText);

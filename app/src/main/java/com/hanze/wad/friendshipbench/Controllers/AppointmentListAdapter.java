@@ -52,7 +52,7 @@ public class AppointmentListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.title.setText(objects.get(position).getSummary());
-        holder.subTitle.setText(objects.get(position).getReadableTime());
+        holder.subTitle.setText(objects.get(position).getFancyTime());
         holder.icon.setImageResource(objects.get(position).getStatusIcon());
         return convertView;
     }

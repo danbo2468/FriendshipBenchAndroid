@@ -1,7 +1,12 @@
+/*
+ * Copyright (c) 2018. Developed by the Hanzehogeschool Groningen for Friendship Bench Zimbabwe.
+ */
+
 package com.hanze.wad.friendshipbench.Models;
 
 import com.hanze.wad.friendshipbench.R;
-
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -10,40 +15,41 @@ import java.util.Date;
 public class Appointment {
 
     private int id;
-    private String time;
+    private Date time;
     private String status;
     private Bench bench;
     private Client client;
     private Healthworker healthworker;
 
-    public Appointment(int id, String time, String status, Bench bench, Client client, Healthworker healthworker) {
-        this.id = id;
-        this.time = time;
-        this.status = status;
-        this.bench = bench;
-        this.client = client;
-        this.healthworker = healthworker;
+    public Appointment(JSONObject json){
+        try {
+            id = json.getInt("id");
+            try {
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                time = formatter.parse(json.getString("timestamp"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            status = json.getString("status");
+            bench = new Bench(json.getJSONObject("bench"));
+            client = new Client(json.getJSONObject("client"));
+            healthworker = new Healthworker(json.getJSONObject("healthWorker"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getId() {
         return id;
     }
 
-    public String getTime(){
+    public Date getTime(){
         return time;
     }
 
-    public String getReadableTime() {
-        Date timeString;
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        try {
-            timeString = formatter.parse(this.time);
-            DateFormat df = new SimpleDateFormat("EEEE dd MMMM yyyy, HH:mm");
-            return df.format(timeString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public String getFancyTime() {
+        DateFormat dateFormat = new SimpleDateFormat("EEEE dd MMMM yyyy, HH:mm");
+        return dateFormat.format(time);
     }
 
     public String getStatus() {
@@ -63,7 +69,7 @@ public class Appointment {
     }
 
     public String getSummary(){
-        return "Appointment with " + healthworker.getFullName();
+        return "Appointment with " + healthworker.getFullname();
     }
 
     public int getStatusIcon(){
@@ -74,7 +80,7 @@ public class Appointment {
         return R.drawable.ic_close;
     }
 
-    public String getReadableStatus(){
+    public String getFancyStatus(){
         if(status.equals("PENDING"))
             return "Pending";
         if(status.equals("ACCEPTED"))

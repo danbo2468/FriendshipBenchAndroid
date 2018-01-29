@@ -1,25 +1,32 @@
+/*
+ * Copyright (c) 2018. Developed by the Hanzehogeschool Groningen for Friendship Bench Zimbabwe.
+ */
+
 package com.hanze.wad.friendshipbench.Models;
 
-/**
- * Created by danie on 18-Jan-18.
- */
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Answer {
     private int id;
-    private String question;
+    private Question question;
     private boolean answer;
 
-    public Answer(int id, String question, boolean answer) {
-        this.id = id;
-        this.question = question;
-        this.answer = answer;
+    public Answer(JSONObject json) {
+        try {
+            id = json.getInt("id");
+            answer = json.getBoolean("answer");
+            question = new Question(json.getJSONObject("question"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getId() {
         return id;
     }
 
-    public String getQuestion() {
+    public Question getQuestion() {
         return question;
     }
 

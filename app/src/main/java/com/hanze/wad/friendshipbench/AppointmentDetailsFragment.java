@@ -4,9 +4,6 @@
 
 package com.hanze.wad.friendshipbench;
 
-import android.content.Context;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
@@ -14,26 +11,20 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
-import com.android.volley.toolbox.HttpResponse;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapView;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.gson.Gson;
-import com.hanze.wad.friendshipbench.ApiModels.AppointmentPut;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
-import com.hanze.wad.friendshipbench.Controllers.AppointmentController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Appointment;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 /**
  * Fragment controller for the appointment detail page.
@@ -90,11 +81,12 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
     private void fetchAppointment(int id) {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.appointments_url) + "/" + id, activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.appointments_url) + "/" + id, Request.Method.GET, null, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
-                    jsonToAppointment(new JSONObject(result));
+                    appointment = new Appointment(new JSONObject(result));
+                    updateView();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -107,25 +99,16 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
     }
 
     /**
-     * Convert a JSON object to an appointment.
-     * @param json The JSON object with the appointments in it.
-     */
-    private void jsonToAppointment(JSONObject json) {
-        this.appointment = AppointmentController.jsonToModel(json);
-        updateView();
-    }
-
-    /**
      * Update the view with the right appointment information.
      */
     private void updateView(){
 
         // Update all the text items.
         ((TextView) activity.findViewById(R.id.appointmentTextHeader)).setText(appointment.getSummary());
-        ((TextView) activity.findViewById(R.id.appointmentWhenValue)).setText(appointment.getReadableTime());
-        ((TextView) activity.findViewById(R.id.appointmentWhoValue)).setText("You and " + appointment.getHealthworker().getFullName());
+        ((TextView) activity.findViewById(R.id.appointmentWhenValue)).setText(appointment.getFancyTime());
+        ((TextView) activity.findViewById(R.id.appointmentWhoValue)).setText("You and " + appointment.getHealthworker().getFullname());
         ((TextView) activity.findViewById(R.id.appointmentWhereValue)).setText(appointment.getBench().getFullLocation());
-        ((TextView) activity.findViewById(R.id.appointmentStatusValue)).setText(appointment.getReadableStatus());
+        ((TextView) activity.findViewById(R.id.appointmentStatusValue)).setText(appointment.getFancyStatus());
 
         // Show or hide the right buttons according to the current appointment status.
         if(appointment.getStatus().equals("PENDING")){
@@ -152,9 +135,8 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
         else
             url = getString(R.string.appointments_url) + "/" + appointment.getId() + "/cancel";
 
-
         // Make an API PUT request.
-        ApiController.getInstance(context).putRequestWithoutBody(url, activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(url, Request.Method.PUT, null, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 Toast.makeText(context, "The status for this appointment has been updated.", Toast.LENGTH_LONG).show();
@@ -173,37 +155,10 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
      * @param googleMap The map.
      */
     public void onMapReady(GoogleMap googleMap) {
-        LatLng location = getLocationFromAddress(appointment.getBench().getFullLocation());
-        googleMap.addMarker(new MarkerOptions().position(location).title("Bench"));
+        LatLng location = appointment.getBench().getLatLong(context);
+        googleMap.addMarker(new MarkerOptions().position(location).title(appointment.getBench().getFullLocation()));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10.0f));
     }
-
-    /**
-     * Get a longLat from the bench address.
-     * @param strAddress The address,
-     * @return The longLat.
-     */
-    public LatLng getLocationFromAddress(String strAddress) {
-        Geocoder coder = new Geocoder(context);
-        List<Address> address;
-        LatLng latlng = null;
-        try {
-            address = coder.getFromLocationName(strAddress, 5);
-            if (address == null) {
-                return null;
-            }
-            Address location = address.get(0);
-            location.getLatitude();
-            location.getLongitude();
-            latlng = new LatLng(location.getLatitude(), location.getLongitude() );
-        } catch (IOException ex) {
-
-            ex.printStackTrace();
-        }
-
-        return latlng;
-    }
-
 
     @Override
     public void onResume() {

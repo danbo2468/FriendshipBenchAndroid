@@ -6,7 +6,6 @@ package com.hanze.wad.friendshipbench;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
-import com.hanze.wad.friendshipbench.Controllers.QuestionnaireController;
 import com.hanze.wad.friendshipbench.Controllers.QuestionnaireListAdapter;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Questionnaire;
@@ -85,7 +85,7 @@ public class QuestionnaireOverviewFragment extends CustomFragment {
         questionnairesList.clear();
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questionnaires_url), activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.questionnaires_url), Request.Method.GET, null, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -116,7 +116,7 @@ public class QuestionnaireOverviewFragment extends CustomFragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            questionnairesList.add(QuestionnaireController.jsonToSummarizedModel(questionnaireJson));
+            questionnairesList.add(new Questionnaire(questionnaireJson));
         }
 
         // Let the custom adapter know that the dataset has been changed.

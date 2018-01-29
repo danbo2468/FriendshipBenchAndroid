@@ -12,9 +12,9 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
-import com.hanze.wad.friendshipbench.Controllers.ClientController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Client;
 
@@ -65,11 +65,12 @@ public class ProfileFragment extends CustomFragment {
     private void fetchProfile() {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.account_url) + "/me", activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.account_url) + "/me", Request.Method.GET, null, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
-                    jsonToClient(new JSONObject(result));
+                    client = new Client(new JSONObject(result));
+                    updateView();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -82,23 +83,16 @@ public class ProfileFragment extends CustomFragment {
     }
 
     /**
-     * Convert a JSON object to a client.
-     * @param json The JSON object with a client in it.
-     */
-    private void jsonToClient(JSONObject json) {
-        this.client = ClientController.jsonToModel(json);
-        updateView();
-    }
-
-    /**
      * Update the view with the right profile information.
      */
     private void updateView(){
 
         // Update all the text items.
         ((TextView) activity.findViewById(R.id.profileNameValue)).setText(client.getFullname());
-        ((TextView) activity.findViewById(R.id.profileGenderValue)).setText(client.getGenderString());
+        ((TextView) activity.findViewById(R.id.profileGenderValue)).setText(client.getFancyGender());
         ((TextView) activity.findViewById(R.id.profileAddressValue)).setText(client.getAddress());
         ((TextView) activity.findViewById(R.id.profileEmailValue)).setText(client.getEmail());
+        ((TextView) activity.findViewById(R.id.profileUsernameValue)).setText(client.getUsername());
+        ((TextView) activity.findViewById(R.id.profileBirthdayValue)).setText(client.getFancyBirthday());
     }
 }

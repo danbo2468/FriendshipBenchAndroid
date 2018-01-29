@@ -1,26 +1,30 @@
 package com.hanze.wad.friendshipbench.Models;
 
-/**
- * Created by danie on 19-Jan-18.
- */
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class Question {
+
     private int id;
-    private String question;
+    private String questionText;
     private boolean active;
 
-    public Question(int id, String question, boolean active) {
-        this.id = id;
-        this.question = question;
-        this.active = active;
+    public Question(JSONObject json) {
+        try {
+            id = json.getInt("id");
+            questionText = json.getString("question_text");
+            active = json.getBoolean("active");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getId() {
         return id;
     }
 
-    public String getQuestion() {
-        return question;
+    public String getQuestionText() {
+        return questionText;
     }
 
     public boolean isActive() {

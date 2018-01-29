@@ -2,58 +2,56 @@ package com.hanze.wad.friendshipbench.Models;
 
 import com.hanze.wad.friendshipbench.R;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 public class Questionnaire {
+
     private int id;
-    private String time;
-    private String clientId;
+    private Date time;
     private boolean redflag;
     private Client client;
     private List<Answer> answers;
 
-    public Questionnaire(int id, String time, String clientId, boolean redflag) {
-        this.id = id;
-        this.time = time;
-        this.clientId = clientId;
-        this.redflag = redflag;
-    }
+    public Questionnaire(JSONObject json){
+        try {
+            id = json.getInt("id");
+            try {
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                time = formatter.parse(json.getString("timestamp"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            redflag = json.getBoolean("redflag");
+            client = new Client(json.getJSONObject("client"));
+            answers = new ArrayList<>();
+            for (int i = 0; i < json.getJSONArray("answers").length(); i++)
+                answers.add(new Answer(json.getJSONArray("answers").getJSONObject(i)));
 
-    public Questionnaire(int id, String time, Client client, List<Answer> answers, boolean redflag) {
-        this.id = id;
-        this.time = time;
-        this.client = client;
-        this.answers = answers;
-        this.redflag = redflag;
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     public int getId() {
         return id;
     }
 
-    public String getTime() {
+    public Date getTime() {
         return time;
     }
 
-    public String getReadableTime() {
-        Date timeString;
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        try {
-            timeString = formatter.parse(this.time);
-            DateFormat df = new SimpleDateFormat("EEEE dd MMMM yyyy, HH:mm");
-            return df.format(timeString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-
-    public String getClientId() {
-        return clientId;
+    public String getFancyTime() {;
+        DateFormat dateFormat = new SimpleDateFormat("EEEE dd MMMM yyyy, HH:mm");
+        return dateFormat.format(time);
     }
 
     public Client getClient(){

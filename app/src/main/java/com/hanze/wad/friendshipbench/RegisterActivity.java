@@ -8,14 +8,13 @@ import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.ApiModels.RegisterModel;
@@ -23,21 +22,29 @@ import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+/**
+ * The activity for the register logic.
+ */
 public class RegisterActivity extends AppCompatActivity {
 
     private Calendar birthdayCalendar;
     private DatePickerDialog.OnDateSetListener date;
 
+    /**
+     * This method will be called upon creation.
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
+        birthdayCalendar = Calendar.getInstance();
+
+        // Handle the registerButton clicks.
         findViewById(R.id.registerButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -46,20 +53,22 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        // Handle the loginButton clicks.
         findViewById(R.id.loginButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(getBaseContext(), LoginActivity.class));
             }
         });
 
+        // Handle the birthdayField clicks.
         findViewById(R.id.birthdayField).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new DatePickerDialog(RegisterActivity.this, date, Calendar.getInstance().get(Calendar.YEAR), Calendar.getInstance().get(Calendar.MONTH),Calendar.getInstance().get(Calendar.DAY_OF_MONTH)).show();
+                new DatePickerDialog(RegisterActivity.this, date, birthdayCalendar.get(Calendar.YEAR), birthdayCalendar.get(Calendar.MONTH), birthdayCalendar.get(Calendar.DAY_OF_MONTH)).show();
             }
         });
 
-
+        // Handle the OnDateSetListener.
         date = new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
@@ -74,12 +83,20 @@ public class RegisterActivity extends AppCompatActivity {
         };
     }
 
+    /**
+     * Go to the login page when the back button is being pressed.
+     */
     @Override
     public void onBackPressed() {
         startActivity(new Intent(getBaseContext(), LoginActivity.class));
     }
 
+    /**
+     * Try to create a new account.
+     */
     private void attemptRegister(){
+
+        // Set and check the details.
         String email = ((EditText)findViewById(R.id.emailField)).getText().toString();
         String username = ((EditText)findViewById(R.id.usernameField)).getText().toString();
         String password = ((EditText)findViewById(R.id.passwordField)).getText().toString();
@@ -96,7 +113,6 @@ public class RegisterActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
             birthday = dateFormat.format(birthdayCalendar.getTime());
         }
-
         String gender;
         if(((RadioButton) findViewById(R.id.genderMale)).isChecked())
             gender = "Male";
@@ -111,7 +127,6 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         RegisterModel registerModel = new RegisterModel(email, username, password, firstname, lastname, province, district, streetname, number, gender, birthday);
-
         JSONObject json = null;
         try {
             json = new JSONObject(new Gson().toJson(registerModel));
@@ -119,7 +134,8 @@ public class RegisterActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        ApiController.getInstance(getBaseContext()).register(getString(R.string.register_url), json, new VolleyCallback(){
+        // Make a request.
+        ApiController.getInstance(getBaseContext()).apiRequest(getString(R.string.register_url), Request.Method.POST, json, null, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 Toast.makeText(getBaseContext(), getResources().getString(R.string.succesfully_registered), Toast.LENGTH_LONG).show();
@@ -131,6 +147,5 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-
 }
 

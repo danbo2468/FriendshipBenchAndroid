@@ -4,12 +4,9 @@
 
 package com.hanze.wad.friendshipbench;
 import android.content.Intent;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Base64;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -18,26 +15,36 @@ import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.FileController;
-import com.hanze.wad.friendshipbench.Controllers.TokenController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
+import com.hanze.wad.friendshipbench.Models.Token;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/**
+ * The activity for the login.
+ */
 public class LoginActivity extends AppCompatActivity {
 
     private String clientId = "OauthClient";
     private String clientSecret = "OauthSuperSecret";
 
+    /**
+     * This method will be called upon creation.
+     * @param savedInstanceState The saved instance state.
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_login);
+
+        // If the user is loggedin, redirect the user to the main activity.
         if(FileController.fileExists(getString(R.string.token_file_name), this)) {
             startActivity(new Intent(getBaseContext(), MainActivity.class));
             return;
         }
 
-        setContentView(R.layout.activity_login);
-
+        // Handle the loginButton clicks.
         findViewById(R.id.loginButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
@@ -46,6 +53,7 @@ public class LoginActivity extends AppCompatActivity {
             }
         });
 
+        // Handle the registerButton clicks.
         findViewById(R.id.registerButton).setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 startActivity(new Intent(getBaseContext(), RegisterActivity.class));
@@ -53,10 +61,18 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Don't do anything when the back button is pressed.
+     */
     @Override
     public void onBackPressed() {}
 
+    /**
+     * Try to log the user in.
+     */
     private void attemptLogin(){
+
+        // Check and set the information.
         String username = ((EditText)findViewById(R.id.usernameField)).getText().toString();
         String password = ((EditText)findViewById(R.id.passwordField)).getText().toString();
         if(username.equals("") || password.equals("")){
@@ -67,6 +83,7 @@ public class LoginActivity extends AppCompatActivity {
         byte[] bytesEncoded = Base64.encode(stringToEncode.getBytes(), Base64.DEFAULT);
         String base64 =  new String(bytesEncoded);
 
+        // Do a request to retrieve the token.
         ApiController.getInstance(getBaseContext()).getToken(getString(R.string.authentication_url), username, password, base64, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
@@ -90,8 +107,12 @@ public class LoginActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Save the token.
+     * @param json The json with the token.
+     */
     private void saveToken(JSONObject json){
-        String modelJson = new Gson().toJson(TokenController.jsonToModel(json));
+        String modelJson = new Gson().toJson(new Token(json));
         FileController.writeFile(getString(R.string.token_file_name), modelJson, this);
     }
 }

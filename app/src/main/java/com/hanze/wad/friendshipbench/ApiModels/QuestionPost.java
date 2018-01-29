@@ -4,11 +4,8 @@
 
 package com.hanze.wad.friendshipbench.ApiModels;
 
-/**
- * Created by danie on 28-Jan-18.
- */
-
 public class QuestionPost {
+
     private int id;
 
     public QuestionPost(int id) {

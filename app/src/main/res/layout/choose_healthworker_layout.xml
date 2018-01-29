@@ -58,12 +58,12 @@
                 style="@style/LinearLabelValueLayout">
 
                 <TextView
-                    android:id="@+id/healthworkerEmailLabel"
+                    android:id="@+id/healthworkerAgeLabel"
                     style="@style/LabelText"
-                    android:text="@string/label_email" />
+                    android:text="@string/label_age" />
 
                 <TextView
-                    android:id="@+id/healthworkerEmailValue"
+                    android:id="@+id/healthworkerAgeValue"
                     style="@style/ValueText" />
 
             </LinearLayout>

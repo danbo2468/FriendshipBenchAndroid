@@ -2,19 +2,19 @@ package com.hanze.wad.friendshipbench;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.ApiModels.AnswerPost;
 import com.hanze.wad.friendshipbench.ApiModels.QuestionPost;
 import com.hanze.wad.friendshipbench.ApiModels.QuestionnairePost;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
-import com.hanze.wad.friendshipbench.Controllers.QuestionController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Answer;
 import com.hanze.wad.friendshipbench.Models.Question;
@@ -35,7 +35,7 @@ public class NewQuestionnaireFragment extends CustomFragment {
     private static final int YES_ANSWERS_FOR_REDFLAG = 8;
 
     private ArrayList<Question> questionList = new ArrayList<>();
-    private ArrayList<Answer> answerList = new ArrayList<>();
+    private ArrayList<AnswerPost> answerList = new ArrayList<>();
     private boolean suicideQuestionIsYes;
     private int currentQuestion = 0;
     private int numberOfYesQuestions = 0;
@@ -87,7 +87,7 @@ public class NewQuestionnaireFragment extends CustomFragment {
     private void fetchQuestions() {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.questions_url) + "?only-active=true", activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.questions_url) + "?only-active=true", Request.Method.GET, null, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -110,7 +110,7 @@ public class NewQuestionnaireFragment extends CustomFragment {
     private void showNewQuestion(){
         Question question = questionList.get(currentQuestion);
         String progress = (currentQuestion+1) + "/" + questionList.size();
-        ((TextView) activity.findViewById(R.id.questionText)).setText(question.getQuestion());
+        ((TextView) activity.findViewById(R.id.questionText)).setText(question.getQuestionText());
         ((TextView) activity.findViewById(R.id.progressText)).setText(progress);
     }
 
@@ -139,14 +139,8 @@ public class NewQuestionnaireFragment extends CustomFragment {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         String currentTime = df.format(new Date());
 
-        // Create an AnswerPost model for every answer.
-        ArrayList<AnswerPost> answersPost = new ArrayList<>();
-        for (int i = 0; i < answerList.size(); i++) {
-            answersPost.add(new AnswerPost(answerList.get(i).getAnswer(), new QuestionPost(answerList.get(i).getId())));
-        }
-
         // Create a new questionnaire.
-        QuestionnairePost questionnaire = new QuestionnairePost(currentTime, (numberOfYesQuestions > YES_ANSWERS_FOR_REDFLAG || suicideQuestionIsYes), answersPost);
+        QuestionnairePost questionnaire = new QuestionnairePost(currentTime, (numberOfYesQuestions > YES_ANSWERS_FOR_REDFLAG || suicideQuestionIsYes), answerList);
         JSONObject json = null;
         try {
             json = new JSONObject(new Gson().toJson(questionnaire));
@@ -155,7 +149,7 @@ public class NewQuestionnaireFragment extends CustomFragment {
         }
 
         // Make an API POST request.
-        ApiController.getInstance(context).postRequest(getResources().getString(R.string.questionnaires_url), json, activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.questionnaires_url), Request.Method.POST, json, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -184,7 +178,7 @@ public class NewQuestionnaireFragment extends CustomFragment {
      */
     private void saveAnswerAndContinue(Boolean answer){
         Question question = questionList.get(currentQuestion);
-        answerList.add(new Answer(question.getId(), question.getQuestion(), answer));
+        answerList.add(new AnswerPost(answer, new QuestionPost(question.getId())));
         nextQuestion();
     }
 
@@ -200,7 +194,7 @@ public class NewQuestionnaireFragment extends CustomFragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            questionList.add(QuestionController.jsonToModel(questionJson));
+            questionList.add(new Question(questionJson));
         }
     }
 

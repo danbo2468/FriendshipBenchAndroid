@@ -6,7 +6,6 @@ package com.hanze.wad.friendshipbench;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +13,10 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
-import com.hanze.wad.friendshipbench.Controllers.AppointmentController;
 import com.hanze.wad.friendshipbench.Controllers.AppointmentListAdapter;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
 import com.hanze.wad.friendshipbench.Models.Appointment;
@@ -78,7 +78,7 @@ public class AppointmentOverviewFragment extends CustomFragment {
         appointmentsList.clear();
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.appointments_url), activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.appointments_url), Request.Method.GET, null, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -109,7 +109,7 @@ public class AppointmentOverviewFragment extends CustomFragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            appointmentsList.add(AppointmentController.jsonToModel(appointmentJson));
+            appointmentsList.add(new Appointment(appointmentJson));
         }
 
         // Let the custom adapter know that the dataset has been changed.

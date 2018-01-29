@@ -4,40 +4,25 @@
 
 package com.hanze.wad.friendshipbench;
 
-import android.app.Fragment;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.android.volley.Request;
 import com.android.volley.VolleyError;
-import com.google.gson.Gson;
-import com.hanze.wad.friendshipbench.ApiModels.AddHealthworkerPut;
-import com.hanze.wad.friendshipbench.ApiModels.AnswerPost;
-import com.hanze.wad.friendshipbench.ApiModels.QuestionnairePost;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
-import com.hanze.wad.friendshipbench.Controllers.HealthworkerController;
-import com.hanze.wad.friendshipbench.Controllers.QuestionController;
-import com.hanze.wad.friendshipbench.Controllers.QuestionnaireController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
-import com.hanze.wad.friendshipbench.Models.Answer;
 import com.hanze.wad.friendshipbench.Models.Healthworker;
-import com.hanze.wad.friendshipbench.Models.Question;
-import com.hanze.wad.friendshipbench.Models.Questionnaire;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 /**
  * Fragment controller for the choose healthworker page.
@@ -97,7 +82,7 @@ public class ChooseHealthworkerFragment extends CustomFragment {
     private void fetchHealthworkers() {
 
         // Make an API GET request.
-        ApiController.getInstance(context).getRequest(getResources().getString(R.string.healthworkers_url), activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.healthworkers_url), Request.Method.GET, null, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {
@@ -120,13 +105,13 @@ public class ChooseHealthworkerFragment extends CustomFragment {
      */
     private void jsonToHealthworker(JSONArray json) {
         for (int i = 0; i < json.length(); i++) {
-            JSONObject questionJson = null;
+            JSONObject healthworkerJson = null;
             try {
-                questionJson = json.getJSONObject(i);
+                healthworkerJson = json.getJSONObject(i);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            healthworkerList.add(HealthworkerController.jsonToModel(questionJson));
+            healthworkerList.add(new Healthworker(healthworkerJson));
         }
     }
 
@@ -158,11 +143,11 @@ public class ChooseHealthworkerFragment extends CustomFragment {
     private void chooseHealthworker(){
 
         // Make an API POST request.
-        ApiController.getInstance(context).putRequestWithoutBody(getResources().getString(R.string.account_url) + "/setmyhealthworker/" + healthworkerList.get(currentHealthworker).getId(), activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.account_url) + "/setmyhealthworker/" + healthworkerList.get(currentHealthworker).getId(), Request.Method.PUT, null, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
-                activity.user.setHealthWorkerId(healthworkerList.get(currentHealthworker).getId());
-                Toast.makeText(context, "You have chosen " + healthworkerList.get(currentHealthworker).getFullName() + " as your healthworker.", Toast.LENGTH_LONG).show();
+                activity.fetchUser();
+                Toast.makeText(context, "You have chosen " + healthworkerList.get(currentHealthworker).getFullname() + " as your healthworker.", Toast.LENGTH_LONG).show();
                 getFragmentManager().beginTransaction().replace(R.id.content_frame, new MyHealthworkerFragment()).commit();
             }
             @Override
@@ -179,8 +164,9 @@ public class ChooseHealthworkerFragment extends CustomFragment {
     private void showHealthworker(Healthworker healthworker){
 
         // Update all the text items.
-        ((TextView) activity.findViewById(R.id.healthworkerNameValue)).setText(healthworker.getFullName());
-        ((TextView) activity.findViewById(R.id.healthworkerGenderValue)).setText(healthworker.getGenderString());
+        ((TextView) activity.findViewById(R.id.healthworkerNameValue)).setText(healthworker.getFullname());
+        ((TextView) activity.findViewById(R.id.healthworkerGenderValue)).setText(healthworker.getFancyGender());
         ((TextView) activity.findViewById(R.id.healthworkerEmailValue)).setText(healthworker.getEmail());
+        ((TextView) activity.findViewById(R.id.healthworkerAgeValue)).setText(healthworker.getAge() + " years");
     }
 }

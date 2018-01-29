@@ -12,8 +12,9 @@ public class ClientPut {
     private String houseNumber;
     private String province;
     private String district;
+    private String birthDay;
 
-    public ClientPut(String firstName, String lastName, String gender, String streetName, String houseNumber, String province, String district) {
+    public ClientPut(String firstName, String lastName, String gender, String streetName, String houseNumber, String province, String district, String birthday) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.gender = gender;
@@ -21,5 +22,6 @@ public class ClientPut {
         this.houseNumber = houseNumber;
         this.province = province;
         this.district = district;
+        this.birthDay = birthday + "T00:00:00Z";
     }
 }

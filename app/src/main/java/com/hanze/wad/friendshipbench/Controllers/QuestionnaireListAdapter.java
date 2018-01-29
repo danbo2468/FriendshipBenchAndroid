@@ -56,7 +56,7 @@ public class QuestionnaireListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
         holder.title.setText("Questionnaire " + objects.get(position).getId());
-        holder.subTitle.setText(objects.get(position).getReadableTime());
+        holder.subTitle.setText(objects.get(position).getFancyTime());
         if(!objects.get(position).isRedflag())
             holder.icon.setImageResource(0);
         else

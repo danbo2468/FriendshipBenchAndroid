@@ -52,12 +52,40 @@
                 style="@style/LinearLabelValueLayout">
 
                 <TextView
+                    android:id="@+id/profileBirthdayLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_birthday" />
+
+                <TextView
+                    android:id="@+id/profileBirthdayValue"
+                    style="@style/ValueText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
                     android:id="@+id/profileAddressLabel"
                     style="@style/LabelText"
                     android:text="@string/label_address" />
 
                 <TextView
                     android:id="@+id/profileAddressValue"
+                    style="@style/ValueText" />
+
+            </LinearLayout>
+
+            <LinearLayout
+                style="@style/LinearLabelValueLayout">
+
+                <TextView
+                    android:id="@+id/profileUsernameLabel"
+                    style="@style/LabelText"
+                    android:text="@string/label_username" />
+
+                <TextView
+                    android:id="@+id/profileUsernameValue"
                     style="@style/ValueText" />
 
             </LinearLayout>

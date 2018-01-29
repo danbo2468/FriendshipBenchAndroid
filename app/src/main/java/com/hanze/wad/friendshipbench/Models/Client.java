@@ -1,35 +1,68 @@
+/*
+ * Copyright (c) 2018. Developed by the Hanzehogeschool Groningen for Friendship Bench Zimbabwe.
+ */
+
 package com.hanze.wad.friendshipbench.Models;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Calendar;
 
 public class Client {
     private String id;
+    private String firstname;
     private String lastname;
     private String email;
-    private String province;
+    private String username;
     private String gender;
-    private String housenumber;
+    private Date birthday;
     private String streetname;
-    private String birthday;
+    private String housenumber;
+    private String province;
     private String district;
-    private String firstname;
-    private String healthWorkerId;
+    private String phonenumber;
+    private Healthworker healthWorker;
 
-    public Client(String id, String lastname, String email, String province, String gender, String housenumber, String streetname, String birthday, String district, String firstname, String healthWorkerId) {
-        this.id = id;
-        this.lastname = lastname;
-        this.email = email;
-        this.province = province;
-        this.gender = gender;
-        this.housenumber = housenumber;
-        this.streetname = streetname;
-        this.birthday = birthday;
-        this.district = district;
-        this.firstname = firstname;
-        this.healthWorkerId = healthWorkerId;
+    public Client(JSONObject json){
+        try {
+            id = json.getString("id");
+            firstname = json.getString("firstName");
+            lastname = json.getString("lastName");
+            email = json.getString("email");
+            username = json.getString("username");
+            gender = json.getString("gender");
+            try {
+                DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                birthday = formatter.parse(json.getString("birthDay"));
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+            streetname = json.getString("streetName");
+            housenumber = json.getString("housenumber");
+            district = json.getString("district");
+            province = json.getString("province");
+            phonenumber = json.getString("phonenumber");
+            if(json.getJSONObject("healthWorker") != null)
+                    healthWorker = new Healthworker(json.getJSONObject("healthWorker"));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getHousenumber() {
+        return housenumber;
+    }
+
+    public String getPhonenumber() {
+        return phonenumber;
+    }
+
+    public Healthworker getHealthWorker() {
+        return healthWorker;
     }
 
     public String getId() {
@@ -52,6 +85,10 @@ public class Client {
         return gender;
     }
 
+    public String getUsername() {
+        return username;
+    }
+
     public String getHousenmber() {
         return housenumber;
     }
@@ -60,7 +97,7 @@ public class Client {
         return streetname;
     }
 
-    public String getBirthday() {
+    public Date getBirthday() {
         return birthday;
     }
 
@@ -76,45 +113,39 @@ public class Client {
         return firstname + " " + lastname;
     }
 
-    public String getHealthWorkerId() {
-        return healthWorkerId;
-    }
-
-    public void setHealthWorkerId(String healthWorkerId){
-        this.healthWorkerId = healthWorkerId;
-    }
-
     public String getAddress() {
         return streetname + " " + housenumber + ", " + district + ", " + province;
     }
 
-    public String getGenderString(){
-        if(gender.equals("Male"))
+    public String getFancyGender(){
+        if(gender.toLowerCase().equals("male"))
             return "Male";
-        else if(gender.equals("Female"))
+        else if(gender.toLowerCase().equals("female"))
             return "Female";
         else
             return "Unknown";
     }
 
-    public String getReadableBirthday() {
-        Date timeString;
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
-        try {
-            timeString = formatter.parse(this.birthday);
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            return df.format(timeString);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public String getFancyBirthday() {
+        DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+        return dateFormat.format(birthday);
+    }
+
+    public int getAge(){
+        Calendar birthdayCalendar = Calendar.getInstance();
+        Calendar today = Calendar.getInstance();
+        birthdayCalendar.set(birthday.getYear(), birthday.getMonth(), birthday.getDay());
+        int age = today.get(Calendar.YEAR) - birthdayCalendar.get(Calendar.YEAR);
+        if (today.get(Calendar.DAY_OF_YEAR) < birthdayCalendar.get(Calendar.DAY_OF_YEAR))
+            age--;
+        return age-1900;
     }
 
     public String getChatKey(){
-        return id + "" + healthWorkerId;
+        return id + "" + healthWorker.getId();
     }
 
     public boolean hasHealthworker(){
-        return healthWorkerId != null;
+        return healthWorker != null;
     }
 }
