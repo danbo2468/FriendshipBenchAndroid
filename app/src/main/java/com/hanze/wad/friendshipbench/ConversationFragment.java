@@ -4,10 +4,8 @@
 
 package com.hanze.wad.friendshipbench;
 
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,10 +21,8 @@ import com.android.volley.VolleyError;
 import com.github.nkzawa.emitter.Emitter;
 import com.github.nkzawa.socketio.client.IO;
 import com.github.nkzawa.socketio.client.Socket;
-import com.google.gson.Gson;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
-import com.hanze.wad.friendshipbench.Models.Appointment;
 import com.hanze.wad.friendshipbench.Models.Client;
 import com.hanze.wad.friendshipbench.Models.Message;
 
@@ -224,6 +220,9 @@ public class ConversationFragment extends CustomFragment {
         scrollDown();
     }
 
+    /**
+     * Scroll to the bottom of the ScrollView.
+     */
     private void scrollDown(){
         final ScrollView scrollLayout = view.findViewById(R.id.scrollView);
         scrollLayout.post(new Runnable() {
@@ -232,5 +231,9 @@ public class ConversationFragment extends CustomFragment {
                 scrollLayout.fullScroll(View.FOCUS_DOWN);
             }
         });
+    }
+
+    public void closeConnection(){
+        socket.close();
     }
 }

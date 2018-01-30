@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2018. Developed by the Hanzehogeschool Groningen for Friendship Bench Zimbabwe.
+  -->
+
+<resources>
+    <string-array name="redflag_filter">
+        <item>All</item>
+        <item>With red flag</item>
+        <item>Without red flag</item>
+    </string-array>
+</resources>

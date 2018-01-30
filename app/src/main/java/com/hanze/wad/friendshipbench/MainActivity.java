@@ -112,6 +112,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
         FragmentManager fragmentManager = getFragmentManager();
+        if(getFragmentManager().findFragmentById(R.id.content_frame) instanceof ConversationFragment) {
+            ConversationFragment conversationFragment = (ConversationFragment) getFragmentManager().findFragmentById(R.id.content_frame);
+            conversationFragment.closeConnection();
+        }
         if (id == R.id.nav_appointments) {
             fragmentManager.beginTransaction().replace(R.id.content_frame, new AppointmentOverviewFragment()).commit();
         } else if (id == R.id.nav_questionnaires) {

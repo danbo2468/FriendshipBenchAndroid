@@ -49,7 +49,11 @@ public class RegisterActivity extends AppCompatActivity {
             public void onClick(View v) {
                 InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
                 inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                attemptRegister();
+                try {
+                    attemptRegister();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         });
 
@@ -94,7 +98,7 @@ public class RegisterActivity extends AppCompatActivity {
     /**
      * Try to create a new account.
      */
-    private void attemptRegister(){
+    private void attemptRegister() throws JSONException {
         String email = ((EditText)findViewById(R.id.emailField)).getText().toString();
         String username = ((EditText)findViewById(R.id.usernameField)).getText().toString();
         String password = ((EditText)findViewById(R.id.passwordField)).getText().toString();
@@ -111,7 +115,6 @@ public class RegisterActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
             birthday = dateFormat.format(birthdayCalendar.getTime());
         }
-
         String gender;
         if(((RadioButton) findViewById(R.id.genderMale)).isChecked())
             gender = "Male";
@@ -126,14 +129,10 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         RegisterModel registerModel = new RegisterModel(email, username, password, firstname, lastname, province, district, streetname, number, gender, birthday);
+        register(new JSONObject(new Gson().toJson(registerModel)));
+    }
 
-        JSONObject json = null;
-        try {
-            json = new JSONObject(new Gson().toJson(registerModel));
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
+    private void register(JSONObject json){
         ApiController.getInstance(getBaseContext()).apiRequest(getString(R.string.register_url), Request.Method.POST, json, null, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
@@ -146,6 +145,5 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
-
 }
 

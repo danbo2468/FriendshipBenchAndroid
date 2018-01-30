@@ -82,7 +82,7 @@ public class ChooseHealthworkerFragment extends CustomFragment {
     private void fetchHealthworkers() {
 
         // Make an API GET request.
-        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.healthworkers_url), Request.Method.GET, null, activity.token.getAccessToken(), new VolleyCallback(){
+        ApiController.getInstance(context).apiRequest(getResources().getString(R.string.healthworkers_url) + "/approved", Request.Method.GET, null, activity.token.getAccessToken(), new VolleyCallback(){
             @Override
             public void onSuccess(String result){
                 try {

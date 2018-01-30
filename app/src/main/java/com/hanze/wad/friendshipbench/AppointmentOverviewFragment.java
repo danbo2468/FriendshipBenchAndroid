@@ -6,11 +6,14 @@ package com.hanze.wad.friendshipbench;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 public class AppointmentOverviewFragment extends CustomFragment {
 
     private ArrayList<Appointment> appointmentsList = new ArrayList<>();
+    private ArrayList<Appointment> allAppointmentsList = new ArrayList<>();
     private AppointmentListAdapter appointmentListAdapter;
 
     /**
@@ -58,6 +62,21 @@ public class AppointmentOverviewFragment extends CustomFragment {
         appointmentListView.setAdapter(appointmentListAdapter);
         fetchAppointments();
 
+        // Set the filter spinner details.
+        Spinner spinner = view.findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.appointments_filter, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                filterList(parentView.getItemAtPosition(position).toString());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
+
         // Handle the OnItemClick method for a listitem. It will open a detailed view for the selected appointment.
         appointmentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,int position, long id) {
@@ -75,7 +94,7 @@ public class AppointmentOverviewFragment extends CustomFragment {
     private void fetchAppointments() {
 
         // Clear the list with appointments (for refreshing purposes).
-        appointmentsList.clear();
+        allAppointmentsList.clear();
 
         // Make an API GET request.
         ApiController.getInstance(context).apiRequest(getResources().getString(R.string.appointments_url), Request.Method.GET, null, activity.token.getAccessToken(), new VolleyCallback(){
@@ -109,10 +128,32 @@ public class AppointmentOverviewFragment extends CustomFragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            appointmentsList.add(new Appointment(appointmentJson));
+            allAppointmentsList.add(new Appointment(appointmentJson));
         }
 
-        // Let the custom adapter know that the dataset has been changed.
+        // Filter the list with appointments.
+        filterList("All");
+    }
+
+    /**
+     * Filter the list with appointments.
+     * @param filter The status to filter on.
+     */
+    private void filterList(String filter){
+        appointmentsList.clear();
+        if(filter.equals("All")) {
+            for(Appointment appointment : allAppointmentsList)
+                appointmentsList.add(appointment);
+        } else {
+            for(Appointment appointment : allAppointmentsList){
+                if(appointment.getStatus().toUpperCase().equals(filter.toUpperCase()))
+                    appointmentsList.add(appointment);
+            }
+        }
+        if(appointmentsList.size() == 0)
+            ((TextView) view.findViewById(R.id.text_no_appointment)).setText(getString(R.string.no_appointment_message));
+        else
+            ((TextView) view.findViewById(R.id.text_no_appointment)).setText("");
         appointmentListAdapter.notifyDataSetChanged();
     }
 }

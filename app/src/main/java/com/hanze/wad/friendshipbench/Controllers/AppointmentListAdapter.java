@@ -20,6 +20,7 @@ public class AppointmentListAdapter extends BaseAdapter {
         TextView title;
         TextView subTitle;
         ImageView icon;
+        String status;
     }
 
     public AppointmentListAdapter(Context context, ArrayList<Appointment> objects) {
@@ -54,6 +55,7 @@ public class AppointmentListAdapter extends BaseAdapter {
         holder.title.setText(objects.get(position).getSummary());
         holder.subTitle.setText(objects.get(position).getFancyTime());
         holder.icon.setImageResource(objects.get(position).getStatusIcon());
+        holder.status = objects.get(position).getStatus();
         return convertView;
     }
 }

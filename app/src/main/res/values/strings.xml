@@ -61,6 +61,7 @@
     <string name="label_username">Username:</string>
     <string name="label_password">Password:</string>
     <string name="label_password_confirmation">Password confirmation:</string>
+    <string name="label_filter">Filter: </string>
 
     <string name="value_female">Female</string>
     <string name="value_male">Male</string>

@@ -10,7 +10,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,6 +21,7 @@ import com.android.volley.VolleyError;
 import com.hanze.wad.friendshipbench.Controllers.ApiController;
 import com.hanze.wad.friendshipbench.Controllers.QuestionnaireListAdapter;
 import com.hanze.wad.friendshipbench.Controllers.VolleyCallback;
+import com.hanze.wad.friendshipbench.Models.Appointment;
 import com.hanze.wad.friendshipbench.Models.Questionnaire;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -31,6 +34,7 @@ import java.util.ArrayList;
 public class QuestionnaireOverviewFragment extends CustomFragment {
 
     private ArrayList<Questionnaire> questionnairesList = new ArrayList<>();
+    private ArrayList<Questionnaire> allQuestionnairesList = new ArrayList<>();
     private QuestionnaireListAdapter questionnaireListAdapter;
 
     /**
@@ -57,6 +61,21 @@ public class QuestionnaireOverviewFragment extends CustomFragment {
         questionnaireListAdapter= new QuestionnaireListAdapter(context, questionnairesList);
         questionnaireListView.setAdapter(questionnaireListAdapter);
         fetchQuestionnaires();
+
+        // Set the filter spinner details.
+        Spinner spinner = view.findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(context, R.array.redflag_filter, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinner.setAdapter(adapter);
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int position, long id) {
+                filterList(parentView.getItemAtPosition(position).toString());
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> parentView) {
+            }
+        });
 
         // Handle the OnItemClick method.
         questionnaireListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -116,10 +135,37 @@ public class QuestionnaireOverviewFragment extends CustomFragment {
             } catch (JSONException e) {
                 e.printStackTrace();
             }
-            questionnairesList.add(new Questionnaire(questionnaireJson));
+            allQuestionnairesList.add(new Questionnaire(questionnaireJson));
         }
 
-        // Let the custom adapter know that the dataset has been changed.
+        // Filter the list.
+        filterList("All");
+    }
+
+    /**
+     * Filter the list with questionnaires.
+     * @param filter The status to filter on.
+     */
+    private void filterList(String filter){
+        questionnairesList.clear();
+        if(filter.equals("Without red flag")) {
+            for(Questionnaire questionnaire : allQuestionnairesList){
+                if(!questionnaire.isRedflag())
+                    questionnairesList.add(questionnaire);
+            }
+        } else if(filter.equals("With red flag")){
+            for(Questionnaire questionnaire : allQuestionnairesList){
+                if(questionnaire.isRedflag())
+                    questionnairesList.add(questionnaire);
+            }
+        } else {
+            for(Questionnaire questionnaire : allQuestionnairesList)
+                questionnairesList.add(questionnaire);
+        }
+        if(questionnairesList.size() == 0)
+            ((TextView) view.findViewById(R.id.text_no_questionnaire)).setText(getString(R.string.no_questionnaire_message));
+        else
+            ((TextView) view.findViewById(R.id.text_no_questionnaire)).setText("");
         questionnaireListAdapter.notifyDataSetChanged();
     }
 }

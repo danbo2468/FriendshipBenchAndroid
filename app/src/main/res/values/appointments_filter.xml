@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="appointments_filter">
+        <item>All</item>
+        <item>Pending</item>
+        <item>Accepted</item>
+        <item>Cancelled</item>
+    </string-array>
+</resources>
