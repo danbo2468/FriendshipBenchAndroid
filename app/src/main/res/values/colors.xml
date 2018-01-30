@@ -5,6 +5,7 @@
     <color name="colorPrimary">#40A5D1</color>
     <color name="colorPrimaryDark">#1F91C2</color>
     <color name="colorPrimaryDarkest">#033a52</color>
+    <color name="colorRedflag">#c42a34</color>
     <color name="colorAccent">#1F91C2</color>
     <color name="white">#ffffff</color>
 </resources>

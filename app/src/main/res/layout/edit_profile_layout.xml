@@ -90,25 +90,6 @@
                 style="@style/LinearLabelValueLayout">
 
                 <TextView
-                    style="@style/LabelText"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="@string/label_birthday" />
-
-                <EditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:id="@+id/editBirthdayField"
-                    android:clickable="true"
-                    android:focusable="false"/>
-
-
-            </LinearLayout>
-
-            <LinearLayout
-                style="@style/LinearLabelValueLayout">
-
-                <TextView
                     android:id="@+id/editStreetnameLabel"
                     style="@style/LabelText"
                     android:text="@string/label_streetname" />

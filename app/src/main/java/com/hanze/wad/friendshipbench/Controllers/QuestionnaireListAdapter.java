@@ -1,6 +1,8 @@
 package com.hanze.wad.friendshipbench.Controllers;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -57,6 +59,7 @@ public class QuestionnaireListAdapter extends BaseAdapter {
         }
         holder.title.setText("Questionnaire " + objects.get(position).getId());
         holder.subTitle.setText(objects.get(position).getFancyTime());
+        holder.icon.setColorFilter(Color.argb(255, 196, 42, 52));
         if(!objects.get(position).isRedflag())
             holder.icon.setImageResource(0);
         else

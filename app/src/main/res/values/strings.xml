@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Friendship Bench</string>
+    <string name="app_name">Friendship Bench Project</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -76,6 +76,7 @@
     <string name="different_passwords">The entered passwords don\'t match.</string>
     <string name="succesfully_logged_in">Welcome!</string>
     <string name="succesfully_registered">We\'ve created your account. You can now log in.</string>
+    <string name="need_healthworker">Before you can chat with someone, you have to choose a healthworker.</string>
 
     <string name="token_file_name">user_token</string>
 

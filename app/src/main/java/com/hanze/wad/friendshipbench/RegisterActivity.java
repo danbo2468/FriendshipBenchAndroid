@@ -95,8 +95,6 @@ public class RegisterActivity extends AppCompatActivity {
      * Try to create a new account.
      */
     private void attemptRegister(){
-
-        // Set and check the details.
         String email = ((EditText)findViewById(R.id.emailField)).getText().toString();
         String username = ((EditText)findViewById(R.id.usernameField)).getText().toString();
         String password = ((EditText)findViewById(R.id.passwordField)).getText().toString();
@@ -113,6 +111,7 @@ public class RegisterActivity extends AppCompatActivity {
             SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
             birthday = dateFormat.format(birthdayCalendar.getTime());
         }
+
         String gender;
         if(((RadioButton) findViewById(R.id.genderMale)).isChecked())
             gender = "Male";
@@ -127,6 +126,7 @@ public class RegisterActivity extends AppCompatActivity {
             return;
         }
         RegisterModel registerModel = new RegisterModel(email, username, password, firstname, lastname, province, district, streetname, number, gender, birthday);
+
         JSONObject json = null;
         try {
             json = new JSONObject(new Gson().toJson(registerModel));
@@ -134,7 +134,6 @@ public class RegisterActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // Make a request.
         ApiController.getInstance(getBaseContext()).apiRequest(getString(R.string.register_url), Request.Method.POST, json, null, new VolleyCallback(){
             @Override
             public void onSuccess(String result){
@@ -147,5 +146,6 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
     }
+
 }
 

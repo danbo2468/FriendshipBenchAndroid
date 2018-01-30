@@ -147,6 +147,7 @@ public class ChooseHealthworkerFragment extends CustomFragment {
             @Override
             public void onSuccess(String result){
                 activity.fetchUser();
+                activity.user.setHealthWorker(healthworkerList.get(currentHealthworker));
                 Toast.makeText(context, "You have chosen " + healthworkerList.get(currentHealthworker).getFullname() + " as your healthworker.", Toast.LENGTH_LONG).show();
                 getFragmentManager().beginTransaction().replace(R.id.content_frame, new MyHealthworkerFragment()).commit();
             }
@@ -166,7 +167,6 @@ public class ChooseHealthworkerFragment extends CustomFragment {
         // Update all the text items.
         ((TextView) activity.findViewById(R.id.healthworkerNameValue)).setText(healthworker.getFullname());
         ((TextView) activity.findViewById(R.id.healthworkerGenderValue)).setText(healthworker.getFancyGender());
-        ((TextView) activity.findViewById(R.id.healthworkerEmailValue)).setText(healthworker.getEmail());
         ((TextView) activity.findViewById(R.id.healthworkerAgeValue)).setText(healthworker.getAge() + " years");
     }
 }

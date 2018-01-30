@@ -131,6 +131,10 @@ public class Client {
         return dateFormat.format(birthday);
     }
 
+    public void setHealthWorker(Healthworker healthWorker){
+        this.healthWorker = healthWorker;
+    }
+
     public int getAge(){
         Calendar birthdayCalendar = Calendar.getInstance();
         Calendar today = Calendar.getInstance();

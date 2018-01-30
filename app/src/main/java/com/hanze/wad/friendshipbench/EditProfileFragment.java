@@ -7,6 +7,7 @@ package com.hanze.wad.friendshipbench;
 import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,8 +39,6 @@ import java.util.Locale;
 public class EditProfileFragment extends CustomFragment {
 
     private Client client;
-    private Calendar birthdayCalendar;
-    private DatePickerDialog.OnDateSetListener date;
 
     /**
      * The OnCreateView method which will be called first.
@@ -62,7 +61,6 @@ public class EditProfileFragment extends CustomFragment {
 
         // Get the current client details.
         fetchProfile();
-        birthdayCalendar = Calendar.getInstance();
 
         // Handle the OnItemClick method for update button. It will do an API PUT request.
         view.findViewById(R.id.updateProfileButton).setOnClickListener(new View.OnClickListener() {
@@ -72,29 +70,6 @@ public class EditProfileFragment extends CustomFragment {
                 updateProfile();
             }
         });
-
-        // Handle the OnItemClick method for the calendar popup.
-        view.findViewById(R.id.editBirthdayField).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new DatePickerDialog(activity, date, birthdayCalendar.get(Calendar.YEAR), birthdayCalendar.get(Calendar.MONTH), birthdayCalendar.get(Calendar.DAY_OF_MONTH)).show();
-            }
-        });
-
-        // Handle the OnDateSetListener.
-        final EditText field = view.findViewById(R.id.editBirthdayField);
-        date = new DatePickerDialog.OnDateSetListener() {
-            @Override
-            public void onDateSet(DatePicker view, int year, int monthOfYear, int dayOfMonth) {
-                birthdayCalendar = Calendar.getInstance();
-                birthdayCalendar.set(Calendar.YEAR, year);
-                birthdayCalendar.set(Calendar.MONTH, monthOfYear);
-                birthdayCalendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
-                String myFormat = "dd-MM-yyyy";
-                SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
-                field.setText(dateFormat.format(birthdayCalendar.getTime()));
-            }
-        };
     }
 
     /**
@@ -132,7 +107,6 @@ public class EditProfileFragment extends CustomFragment {
         ((TextView) activity.findViewById(R.id.editHousenumberField)).setText(client.getHousenmber());
         ((TextView) activity.findViewById(R.id.editDistrictField)).setText(client.getDistrict());
         ((TextView) activity.findViewById(R.id.editProvinceField)).setText(client.getProvince());
-        ((TextView) activity.findViewById(R.id.editBirthdayField)).setText(client.getFancyBirthday());
 
         // Update the gender radio buttons.
         ((RadioButton) activity.findViewById(R.id.editGenderMale)).setChecked(client.getGender().equals("Male"));
@@ -151,22 +125,16 @@ public class EditProfileFragment extends CustomFragment {
         else
             gender = "Female";
 
-        // Get the birthday.
-        String birthday = "";
-        if(birthdayCalendar != null){
-            String myFormat = "yyyy-MM-dd";
-            SimpleDateFormat dateFormat = new SimpleDateFormat(myFormat, Locale.US);
-            birthday = dateFormat.format(birthdayCalendar.getTime());
-        }
-
         // Update the client details.
-        ClientPut clientPut = new ClientPut(((EditText)activity.findViewById(R.id.editFirstnameField)).getText().toString(), ((EditText)activity.findViewById(R.id.editLastnameField)).getText().toString(), gender, ((EditText)activity.findViewById(R.id.editStreetnameField)).getText().toString(), ((EditText)activity.findViewById(R.id.editHousenumberField)).getText().toString(), ((EditText)activity.findViewById(R.id.editProvinceField)).getText().toString(), ((EditText)activity.findViewById(R.id.editDistrictField)).getText().toString(), birthday);
+        ClientPut clientPut = new ClientPut(((EditText)activity.findViewById(R.id.editFirstnameField)).getText().toString(), ((EditText)activity.findViewById(R.id.editLastnameField)).getText().toString(), gender, ((EditText)activity.findViewById(R.id.editStreetnameField)).getText().toString(), ((EditText)activity.findViewById(R.id.editHousenumberField)).getText().toString(), ((EditText)activity.findViewById(R.id.editProvinceField)).getText().toString(), ((EditText)activity.findViewById(R.id.editDistrictField)).getText().toString());
         JSONObject json = null;
         try {
             json = new JSONObject(new Gson().toJson(clientPut));
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        Log.d("TEST", json.toString());
 
         // Make an API PUT request.
         ApiController.getInstance(context).apiRequest(getResources().getString(R.string.account_url) + "/me", Request.Method.PUT, json, activity.token.getAccessToken(), new VolleyCallback(){

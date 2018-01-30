@@ -16,6 +16,7 @@
         android:text="@string/header_conversation" />
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_below="@id/textView"
         android:layout_width="match_parent"
         android:layout_above="@+id/newMessageLayout"

@@ -73,27 +73,31 @@
     <style name="OwnMessage">
         <item name="android:textAlignment">textEnd</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="OwnSender">
         <item name="android:textAlignment">textEnd</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="OtherMessage">
         <item name="android:textAlignment">textStart</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="OtherSender">
         <item name="android:textAlignment">textStart</item>
         <item name="android:textStyle">bold</item>
         <item name="android:layout_width">match_parent</item>
+        <item name="android:textSize">15sp</item>
     </style>
 
     <style name="ChatMessage">
-        <item name="android:paddingBottom">6dp</item>
+        <item name="android:padding">6dp</item>
         <item name="android:layout_width">match_parent</item>
         <item name="android:orientation">vertical</item>
     </style>
