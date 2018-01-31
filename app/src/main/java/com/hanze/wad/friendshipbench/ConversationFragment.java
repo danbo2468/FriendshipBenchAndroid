@@ -115,7 +115,7 @@ public class ConversationFragment extends CustomFragment {
     private Emitter.Listener handleNewMessage = new Emitter.Listener() {
         @Override
         public void call(final Object... args) {
-            getActivity().runOnUiThread(new Runnable() {
+            activity.runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
                     showOtherMessage(args[0].toString(), args[1].toString(), args[2].toString(), args[3].toString());
@@ -134,13 +134,13 @@ public class ConversationFragment extends CustomFragment {
     private void showOtherMessage(String user, String name, String message, String time){
 
         // Create a new linearLabelValueLayout.
-        ContextThemeWrapper layoutContext = new ContextThemeWrapper(getActivity().getBaseContext(), R.style.ChatMessage);
+        ContextThemeWrapper layoutContext = new ContextThemeWrapper(context, R.style.ChatMessage);
         LinearLayout chatMessage = new LinearLayout(layoutContext);
 
         // Set the text fields.
-        TextView sender = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OtherSender));
+        TextView sender = new TextView(new ContextThemeWrapper(context, R.style.OtherSender));
         sender.setText(name);
-        TextView messageText = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OtherMessage));
+        TextView messageText = new TextView(new ContextThemeWrapper(context, R.style.OtherMessage));
         messageText.setText(message);
 
         // Add everything to the chat.
@@ -204,13 +204,13 @@ public class ConversationFragment extends CustomFragment {
     private void showMyMessage(String message, String time){
 
         // Create a new linearLabelValueLayout.
-        ContextThemeWrapper layoutContext = new ContextThemeWrapper(getActivity().getBaseContext(), R.style.ChatMessage);
+        ContextThemeWrapper layoutContext = new ContextThemeWrapper(context, R.style.ChatMessage);
         LinearLayout chatMessage = new LinearLayout(layoutContext);
 
         // Set the text fields.
-        TextView sender = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OwnSender));
+        TextView sender = new TextView(new ContextThemeWrapper(context, R.style.OwnSender));
         sender.setText("You");
-        TextView messageText = new TextView(new ContextThemeWrapper(getActivity().getBaseContext(), R.style.OwnMessage));
+        TextView messageText = new TextView(new ContextThemeWrapper(context, R.style.OwnMessage));
         messageText.setText(message);
 
         // Add everything to the chat.

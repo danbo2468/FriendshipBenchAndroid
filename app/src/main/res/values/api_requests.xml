@@ -9,5 +9,5 @@
     <string name="register_url">https://hpa-api.figueus.com/api/clients/register</string>
     <string name="message_history_url">https://hpa-api.figueus.com/api/messages</string>
 
-    <string name="chat_url">http://128.199.63.13:3000</string>
+    <string name="chat_url">https://hpa-chat.figueus.com</string>
 </resources>

@@ -33,6 +33,7 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
 
     private Appointment appointment;
     private MapView mapView;
+    private GoogleMap googleMap;
 
     /**
      * The OnCreateView method which will be called first.
@@ -55,9 +56,6 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
      * The initialization of the specific fragment.
      */
     protected void initializeFragment(){
-
-        // Fetch a new appointment.
-        fetchAppointment(getArguments().getInt("appointment_id"));
 
         // Handle the OnItemClick method for the accept button. It will do an API PUT request.
         view.findViewById(R.id.acceptButton).setOnClickListener(new View.OnClickListener() {
@@ -86,6 +84,7 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
             public void onSuccess(String result){
                 try {
                     appointment = new Appointment(new JSONObject(result));
+                    placeMarker();
                     updateView();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -155,6 +154,11 @@ public class AppointmentDetailsFragment extends CustomFragment implements OnMapR
      * @param googleMap The map.
      */
     public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
+        fetchAppointment(getArguments().getInt("appointment_id"));
+    }
+
+    public void placeMarker(){
         LatLng location = appointment.getBench().getLatLong(context);
         googleMap.addMarker(new MarkerOptions().position(location).title(appointment.getBench().getFullLocation()));
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(location, 10.0f));
